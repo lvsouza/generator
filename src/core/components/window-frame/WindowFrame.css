@@ -1,0 +1,8 @@
+.draggable-area {
+    -webkit-app-region: drag;
+}
+
+.frame-base {
+    height: 30px;
+}
+

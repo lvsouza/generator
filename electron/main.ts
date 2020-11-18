@@ -6,7 +6,6 @@ import {
   BrowserWindow,
   MenuItemConstructorOptions
 } from 'electron';
-import { autoUpdater } from 'electron-updater';
 import * as path from 'path';
 import * as url from 'url';
 
@@ -21,10 +20,14 @@ function createWindow() {
 
   mainWindow = new BrowserWindow({
     icon,
-    frame: true,
-    minWidth: 1000,
-    minHeight: 600,
+    frame: false,
+    minWidth: 600,
+    minHeight: 400,
+    resizable: true,
+    vibrancy: 'dark',
     transparent: true,
+    maximizable: true,
+    autoHideMenuBar: true,
     webPreferences: {
       nodeIntegration: true
     }
@@ -87,7 +90,6 @@ async function createMenu() {
 
 app.on('ready', () => {
   createWindow();
-  autoUpdater.checkForUpdatesAndNotify();
   createMenu();
 });
 

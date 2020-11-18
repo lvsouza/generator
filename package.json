@@ -2,14 +2,14 @@
   "name": "generator",
   "version": "0.0.1",
   "description": "Help you to generate code",
-  "repository": "https://github.com/lvsouza/generator.git",
   "keywords": [
     "electron",
     "generator",
     "code-generator",
     "development"
   ],
-  "license": "APACHE 2.0",
+  "repository": "https://github.com/lvsouza/generator.git",
+  "license": "APACHE",
   "author": "Lucas Souza",
   "main": "./dist/main.js",
   "scripts": {
@@ -25,6 +25,26 @@
     "package": "yarn build && electron-builder build --publish never",
     "test": "jest --passWithNoTests",
     "tsc": "tsc --noEmit"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix"
+    ],
+    "package.json": [
+      "sort-package-json"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   },
   "dependencies": {
     "@babel/runtime": "7.10.5",
@@ -112,29 +132,17 @@
       ],
       "category": "Development"
     },
+    "win": {
+      "target": [
+        "portable"
+      ]
+    },
+    "portable": {
+      "artifactName": "generator.exe"
+    },
     "directories": {
       "buildResources": "build",
       "output": "release"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix"
-    ],
-    "package.json": [
-      "sort-package-json"
-    ]
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
     }
   }
 }

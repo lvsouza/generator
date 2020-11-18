@@ -1,0 +1,27 @@
+:root {
+    --input-border: thin solid var(--color-background-highlighted);
+}
+
+.border-default {
+    border: var(--input-border);
+}
+
+.border-default-transparent {
+    border: thin solid transparent;
+}
+
+.border-radius {
+    border-radius: var(--size-xs);
+}
+
+.border-radius-soft {
+    border-radius: var(--size-xs);
+}
+
+.input-border {
+    border: var(--input-border);
+}
+
+.border-none {
+    border: none;
+}

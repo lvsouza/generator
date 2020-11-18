@@ -1,0 +1,133 @@
+@import './animations.css';
+@import './positions.css';
+@import './z-indexes.css';
+@import './paddings.css';
+@import './opacitys.css';
+@import './outlines.css';
+@import './shadows.css';
+@import './borders.css';
+@import './margins.css';
+@import './colors.css';
+@import './events.css';
+@import './flexs.css';
+@import './fonts.css';
+@import './hrs.css';
+:root {
+    /*
+        Font default 16px
+        16 * 0.6 = 9.6px
+
+        1rem = 9.6px
+    */
+    font-size: 50%;
+    /* *** */
+    --size-none: 0rem;
+    --size-xxs: 0.1rem;
+    --size-xs: 0.5rem;
+    --size-s: 1rem;
+    --size-sm: 1.4rem;
+    --size-m: 1.8rem;
+    --size-g: 2.2rem;
+    --size-xg: 3rem;
+    --size-fill: 100%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    outline: none;
+    user-select: none;
+    -ms-user-select: none;
+    box-sizing: border-box;
+    -webkit-user-select: none;
+    -moz-user-select: -moz-none;
+    font-weight: var(--font-weight-m);
+    font-family: var(--font-family-default);
+}
+
+html, body, #root {
+    background-color: var(--color-background);
+    color: var(--text-color);
+    overflow: hidden;
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+
+body, input, button, textarea {
+    font: var(--font-weight-m) var(--font-size-g) var(--font-family-default);
+}
+
+input, textarea, select {
+    background-color: var(--color-background-bars);
+    border-radius: var(--size-xs);
+    border: var(--input-border);
+    padding: var(--padding-s);
+    padding-right: var(--padding-xs);
+    padding-left: var(--padding-xs);
+    color: var(--text-color);
+}
+
+input:disabled, textarea:disabled, select:disabled, button:disabled {
+    opacity: 0.7;
+}
+
+input:focus, textarea:focus, select:focus {
+    background-color: var(--color-background-highlighted);
+    outline: var(--outline-none);
+}
+
+/* Remove os botões da input de texto */
+
+/* Chrome, Safari, Edge, Opera */
+
+input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+div, nav, form {
+    display: flex;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    background-color: transparent;
+}
+
+label {
+    cursor: pointer;
+}
+
+input[type="button"]:hover, button:hover:not(:disabled) {
+    background-color: var(--color-background-highlighted);
+    cursor: pointer;
+}
+
+input[type="button"]:active, button:active {
+    opacity: 0.7;
+}
+
+.full-width {
+    width: var(--size-fill);
+}
+
+.full-height {
+    height: var(--size-fill);
+}
+
+.text-ellipsis {
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    text-align: start;
+    overflow: hidden;
+}
+
+.overflow-auto {
+    overflow: auto;
+}

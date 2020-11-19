@@ -5,12 +5,12 @@ import { useWindowControls } from '../../hooks';
 import './WindowFrame.css';
 
 export const WindowFrame: React.FC = ({ children }) => {
-  const { isMaximized, toggleMaximize, close, minimize } = useWindowControls();
+  const { isMaximized, isFocused, toggleMaximize, close, minimize } = useWindowControls();
 
   return (
-    <main className="flex1 display-flex flex-column">
+    <main className={`flex1 display-flex flex-column ${isFocused ? 'border-default' : 'border-default-transparent'}`}>
       <div className="frame-base background-bars">
-        <div style={{ margin: 1 }} className="flex1 draggable-area flex-items-center">
+        <div className="flex1 draggable-area flex-items-center">
           <label className="padding-horizontal-s">Generator</label>
         </div>
         <ModalControls

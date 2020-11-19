@@ -1,1 +1,1 @@
-export * from './useIsWindowMaximized';
+export * from './useWindowControls';

@@ -9,7 +9,7 @@
     "development"
   ],
   "repository": "https://github.com/lvsouza/generator.git",
-  "license": "APACHE",
+  "license": "Apache 2.0",
   "author": "Lucas Souza",
   "main": "./dist/main.js",
   "scripts": {

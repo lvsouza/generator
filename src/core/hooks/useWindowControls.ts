@@ -6,6 +6,7 @@ import os from 'os';
 interface IWindowControls {
   toggleMaximize(): void;
   isMaximized: boolean;
+  isFocused: boolean;
   minimize(): void;
   close(): void;
 }
@@ -15,6 +16,10 @@ export const useWindowControls = (): IWindowControls => {
   const [isMaximized, setIsMaximized] = useState(window.isFullScreen());
   window.on('unmaximize', () => setIsMaximized(false));
   window.on('maximize', () => setIsMaximized(true));
+
+  const [isFocused, setIsFocused] = useState(window.isFocused());
+  window.on('blur', () => setIsFocused(false));
+  window.on('focus', () => setIsFocused(true));
 
   const toggleMaximize = useCallback(() => {
     const isMacSystem = os.platform() === 'darwin';
@@ -51,6 +56,7 @@ export const useWindowControls = (): IWindowControls => {
   return {
     toggleMaximize,
     isMaximized,
+    isFocused,
     minimize,
     close
   };

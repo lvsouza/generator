@@ -24,6 +24,7 @@ function createWindow() {
     minWidth: 600,
     minHeight: 400,
     resizable: true,
+    darkTheme: true,
     vibrancy: 'dark',
     transparent: true,
     maximizable: true,

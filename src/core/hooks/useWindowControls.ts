@@ -1,62 +1,70 @@
 import { useCallback, useState } from 'react';
 
-import { remote } from 'electron';
-import os from 'os';
+import { remote, ProgressBarOptions } from 'electron';
 
 interface IWindowControls {
+  setProgressBar(progress: number, options: ProgressBarOptions): void;
+  setTitle(title: string): void;
   toggleMaximize(): void;
   isMaximized: boolean;
+  isMinimized: boolean;
   isFocused: boolean;
   minimize(): void;
+  title: string;
   close(): void;
 }
 export const useWindowControls = (): IWindowControls => {
-  const window = remote.getCurrentWindow();
+  const window = () => remote.getCurrentWindow();
 
-  const [isMaximized, setIsMaximized] = useState(window.isFullScreen());
-  window.on('unmaximize', () => setIsMaximized(false));
-  window.on('maximize', () => setIsMaximized(true));
+  const [isMaximized, setIsMaximized] = useState(window().isMaximized());
+  window().on('unmaximize', () => setIsMaximized(window().isMaximized()));
+  window().on('maximize', () => setIsMaximized(window().isMaximized()));
+  window().on('restore', () => setIsMaximized(window().isMaximized()));
 
-  const [isFocused, setIsFocused] = useState(window.isFocused());
-  window.on('blur', () => setIsFocused(false));
-  window.on('focus', () => setIsFocused(true));
+  const [isFocused, setIsFocused] = useState(window().isFocused());
+  window().on('focus', () => setIsFocused(window().isFocused()));
+  window().on('blur', () => setIsFocused(window().isFocused()));
+
+  const [isMinimized, setIsMinimized] = useState(window().isMinimized());
+  window().on('minimize', () => setIsMinimized(window().isMinimized()));
+  window().on('restore', () => setIsMinimized(window().isMinimized()));
 
   const toggleMaximize = useCallback(() => {
-    const isMacSystem = os.platform() === 'darwin';
-    if (isMacSystem) {
-      return window.setFullScreen(!window.isFullScreen());
-    }
-
-    const { width: currentWidth, height: currentHeight } = window.getBounds();
-
-    const {
-      width: maxWidth,
-      height: maxHeight
-    } = remote.screen.getPrimaryDisplay().workAreaSize;
-
-    const isMaximized = currentWidth === maxWidth && currentHeight === maxHeight;
-
-    if (!isMaximized) {
-      window.maximize();
+    if (window().isMaximized()) {
+      window().unmaximize();
     } else {
-      window.unmaximize();
+      window().maximize();
     }
   }, [window]);
 
   const close = useCallback(() => {
-    const window = remote.getCurrentWindow();
-    window.close();
+    window().close();
   }, []);
 
   const minimize = useCallback(() => {
-    const window = remote.getCurrentWindow();
-    window.minimize();
+    window().minimize();
+  }, []);
+
+  const setProgressBar = useCallback((progress: number, options: ProgressBarOptions) => {
+    if (progress >= 0 || progress <= 1) {
+      window().setProgressBar(progress, options);
+    } else {
+      window().setProgressBar(0);
+    }
+  }, []);
+
+  const setTitle = useCallback((title: string) => {
+    window().setTitle(title);
   }, []);
 
   return {
+    title: window().getTitle() || window().title || 'Generator',
+    isMaximized: !!isMaximized,
+    isMinimized: !!isMinimized,
+    isFocused: !!isFocused,
+    setProgressBar,
     toggleMaximize,
-    isMaximized,
-    isFocused,
+    setTitle,
     minimize,
     close
   };

@@ -1,8 +1,12 @@
+:root {
+    --frame-base-height: 3.75rem;
+}
+
 .draggable-area {
     -webkit-app-region: drag;
 }
 
 .frame-base {
-    height: 30px;
+    height: var(--frame-base-height);
 }
 

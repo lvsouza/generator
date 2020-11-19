@@ -18,13 +18,16 @@ const createWindow = () => {
     minHeight: 400,
     resizable: true,
     darkTheme: true,
+    hasShadow: true,
     vibrancy: 'dark',
     transparent: true,
     maximizable: true,
     autoHideMenuBar: true,
+    fullscreenable: false,
     backgroundColor: '#1e1e1e',
     webPreferences: {
       devTools: process.env.NODE_ENV === 'development',
+      defaultFontFamily: { sansSerif: 'Roboto' },
       nodeIntegration: true
     }
   });

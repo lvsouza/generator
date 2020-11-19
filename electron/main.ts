@@ -28,6 +28,7 @@ function createWindow() {
     transparent: true,
     maximizable: true,
     autoHideMenuBar: true,
+    backgroundColor: '#1e1e1e',
     webPreferences: {
       nodeIntegration: true
     }

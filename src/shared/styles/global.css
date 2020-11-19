@@ -99,13 +99,12 @@ div, nav, form {
     background-color: transparent;
 }
 
-label {
+label, button, input[type="button"], input[type="submit"] {
     cursor: pointer;
 }
 
-input[type="button"]:hover, button:hover:not(:disabled) {
+input[type="button"]:hover, input[type="submit"]:hover, button:hover:not(:disabled):not([class*="hover"]) {
     background-color: var(--color-background-highlighted);
-    cursor: pointer;
 }
 
 input[type="button"]:active, button:active {

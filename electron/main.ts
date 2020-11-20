@@ -13,7 +13,7 @@ const createWindow = () => {
 
   mainWindow = new BrowserWindow({
     icon,
-    frame: false,
+    // frame: false,
     minWidth: 600,
     minHeight: 400,
     resizable: true,
@@ -25,6 +25,7 @@ const createWindow = () => {
     autoHideMenuBar: true,
     fullscreenable: false,
     backgroundColor: '#1e1e1e',
+    alwaysOnTop: process.env.NODE_ENV === 'development',
     webPreferences: {
       devTools: process.env.NODE_ENV === 'development',
       defaultFontFamily: { sansSerif: 'Roboto' },

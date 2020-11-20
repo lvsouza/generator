@@ -5,6 +5,7 @@ import { remote, ProgressBarOptions } from 'electron';
 interface IWindowControls {
   setProgressBar(progress: number, options: ProgressBarOptions): void;
   setTitle(title: string): void;
+  isVisibleNativeFrame: boolean;
   toggleMaximize(): void;
   isMaximized: boolean;
   isMinimized: boolean;
@@ -14,7 +15,7 @@ interface IWindowControls {
   close(): void;
 }
 export const useWindowControls = (): IWindowControls => {
-  const window = () => remote.getCurrentWindow();
+  const window = useCallback(() => remote.getCurrentWindow(), []);
 
   const [isMaximized, setIsMaximized] = useState(window().isMaximized());
   window().on('unmaximize', () => setIsMaximized(window().isMaximized()));
@@ -39,11 +40,11 @@ export const useWindowControls = (): IWindowControls => {
 
   const close = useCallback(() => {
     window().close();
-  }, []);
+  }, [window]);
 
   const minimize = useCallback(() => {
     window().minimize();
-  }, []);
+  }, [window]);
 
   const setProgressBar = useCallback((progress: number, options: ProgressBarOptions) => {
     if (progress >= 0 || progress <= 1) {
@@ -51,14 +52,15 @@ export const useWindowControls = (): IWindowControls => {
     } else {
       window().setProgressBar(0);
     }
-  }, []);
+  }, [window]);
 
   const setTitle = useCallback((title: string) => {
     window().setTitle(title);
-  }, []);
+  }, [window]);
 
   return {
     title: window().getTitle() || window().title || 'Generator',
+    isVisibleNativeFrame: true,
     isMaximized: !!isMaximized,
     isMinimized: !!isMinimized,
     isFocused: !!isFocused,

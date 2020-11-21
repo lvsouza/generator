@@ -13,7 +13,7 @@ const createWindow = () => {
 
   mainWindow = new BrowserWindow({
     icon,
-    // frame: false,
+    frame: false,
     minWidth: 600,
     minHeight: 400,
     resizable: true,

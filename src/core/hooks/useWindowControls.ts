@@ -60,7 +60,7 @@ export const useWindowControls = (): IWindowControls => {
 
   return {
     title: window().getTitle() || window().title || 'Generator',
-    isVisibleNativeFrame: true,
+    isVisibleNativeFrame: false,
     isMaximized: !!isMaximized,
     isMinimized: !!isMinimized,
     isFocused: !!isFocused,

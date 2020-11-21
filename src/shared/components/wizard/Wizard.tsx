@@ -18,18 +18,24 @@ export const Wizard: React.FC<IWizardProps> = ({ children, step = 1, isNextDisab
     step = 1;
   }
 
-  const handleNext = useCallback(() => {
+  const handleNext = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
     if ((step + 1) <= wizardLength) {
       onClickNext && onClickNext(step + 1);
+    } else {
+      onClickNext && onClickNext(step);
     }
-    onClickNext && onClickNext(step);
   }, [onClickNext, step, wizardLength]);
 
-  const handlePrevious = useCallback(() => {
+  const handlePrevious = useCallback((e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
+    e.preventDefault();
+
     if ((step - 1) > 0) {
       onClickPrevious && onClickPrevious(step - 1);
+    } else {
+      onClickPrevious && onClickPrevious(step);
     }
-    onClickPrevious && onClickPrevious(step);
   }, [onClickPrevious, step]);
 
   return (

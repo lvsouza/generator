@@ -5,7 +5,8 @@ import { VscEllipsis } from 'react-icons/vsc';
 import { remote } from 'electron';
 import path from 'path';
 
-import { readFolder, readJsonFile } from '../../core/services';
+import { transpileByPatterns, traspileFunctions } from '../../shared/services';
+import { readFolder, readJsonFile, configsStore } from '../../core/services';
 import { ProjectLocationStore } from '../../shared/stores';
 import { PatternInput } from './components/PatternInput';
 import { IConfigFile } from '../../shared/interfaces';
@@ -15,6 +16,7 @@ export const HomePage: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useObserver(ProjectLocationStore.selectedTemplate);
   const [templatesPath, setTemplatesPath] = useObserver(ProjectLocationStore.templatesPath);
   const [projectPath, setProjectPath] = useObserver(ProjectLocationStore.projectPath);
+  const [filesToMove, setFilesToMove] = useObserver(ProjectLocationStore.filesToMove);
   const [patterns, setPatterns] = useObserver(ProjectLocationStore.patterns);
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -41,10 +43,25 @@ export const HomePage: React.FC = () => {
     if (patterns) {
       setPatterns(patterns.map(pattern => ({ ...pattern, value: observe('') })));
     } else {
-      alert('Patterns keys was not found in config file');
+      alert('"patterns" key was not found in config file');
       setCurrentStep(3);
     }
   }, [selectedTemplate, setPatterns, templatesPath]);
+
+  const initFilesToMove = useCallback(() => {
+    const configFile = readJsonFile<IConfigFile>(path.join(templatesPath, selectedTemplate, 'config.json'));
+    const filesToMove = configFile.content?.filesToMove;
+
+    if (filesToMove) {
+      setFilesToMove(filesToMove.map(file => ({
+        ...file,
+        newName: traspileFunctions(transpileByPatterns(file.newName, patterns))
+      })));
+    } else {
+      alert('"filesToMove" key was not found in config file');
+      setCurrentStep(3);
+    }
+  }, [patterns, selectedTemplate, setFilesToMove, templatesPath]);
 
   const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -52,19 +69,25 @@ export const HomePage: React.FC = () => {
     switch (currentStep) {
       case 1:
         setCurrentStep(2);
+        configsStore.set('projectPath', projectPath);
         break;
       case 2:
         setCurrentStep(3);
+        configsStore.set('templatePath', templatesPath);
         break;
       case 3:
         setCurrentStep(4);
         initPatterns();
         break;
       case 4:
-        // setCurrentStep(4);
+        setCurrentStep(5);
+        initFilesToMove();
+        break;
+      case 5:
+        // setCurrentStep(5);
         break;
     };
-  }, [currentStep, initPatterns]);
+  }, [currentStep, initFilesToMove, initPatterns, projectPath, templatesPath]);
 
   const handlePrevius = useCallback((step: number) => {
     setCurrentStep(step);
@@ -125,6 +148,25 @@ export const HomePage: React.FC = () => {
                   <PatternInput key={index} patternProps={pattern.props} value={pattern.value || observe('')} />
                 ))}
               </div>
+            </div>
+            <div className="flex-column">
+              <h3 className="text-align-center padding-s text-align-center">Files to change</h3>
+              {filesToMove.map((file, index) => (
+                <div key={index} className="flex-column padding-bottom-s">
+                  <i className="font-weight-s">
+                    <b className="font-weight-g margin-right-xs">
+                      Name:
+                    </b>
+                    {file.originalName}
+                  </i>
+                  <p className="font-weight-s">
+                    <b className="font-weight-g margin-right-xs">
+                      New name:
+                    </b>
+                    {file.newName}
+                  </p>
+                </div>
+              ))}
             </div>
           </Wizard>
         </form>

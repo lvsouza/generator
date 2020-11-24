@@ -53,15 +53,21 @@ export const HomePage: React.FC = () => {
     const filesToMove = configFile.content?.filesToMove;
 
     if (filesToMove) {
-      setFilesToMove(filesToMove.map(file => ({
-        ...file,
-        newName: traspileFunctions(transpileByPatterns(file.newName, patterns))
-      })));
+      try {
+        setFilesToMove(filesToMove.map(file => ({
+          ...file,
+          newName: traspileFunctions(transpileByPatterns(file.newName, [...patterns, { key: 'ProjectPath', value: observe(projectPath), props: { displayName: 'Project path', description: '' } }])),
+          targetPathString: traspileFunctions(transpileByPatterns(path.join(...file.targetPath), [...patterns, { key: 'ProjectPath', value: observe(projectPath), props: { displayName: 'Project path', description: '' } }]))
+        })));
+      } catch (e) {
+        alert(e.message);
+        setCurrentStep(4);
+      }
     } else {
       alert('"filesToMove" key was not found in config file');
       setCurrentStep(3);
     }
-  }, [patterns, selectedTemplate, setFilesToMove, templatesPath]);
+  }, [patterns, selectedTemplate, setFilesToMove, templatesPath, projectPath]);
 
   const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -150,20 +156,24 @@ export const HomePage: React.FC = () => {
               </div>
             </div>
             <div className="flex-column">
-              <h3 className="text-align-center padding-s text-align-center">Files to change</h3>
+              <h3 className="text-align-center padding-s text-align-center">Files to move</h3>
               {filesToMove.map((file, index) => (
-                <div key={index} className="flex-column padding-bottom-s">
-                  <i className="font-weight-s">
-                    <b className="font-weight-g margin-right-xs">
-                      Name:
-                    </b>
-                    {file.originalName}
-                  </i>
+                <div key={index} className="flex-column padding-s border-default border-radius-soft margin-top-xs">
+                  <p className="font-weight-s">
+                    <b className="font-weight-g margin-right-xs">Name:</b>
+                    <i>{file.originalName}</i>
+                  </p>
                   <p className="font-weight-s">
                     <b className="font-weight-g margin-right-xs">
                       New name:
                     </b>
                     {file.newName}
+                  </p>
+                  <p className="font-weight-s">
+                    <b className="font-weight-g margin-right-xs">
+                      Target path:
+                    </b>
+                    {file.targetPathString}
                   </p>
                 </div>
               ))}

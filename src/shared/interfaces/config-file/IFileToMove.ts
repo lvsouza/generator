@@ -1,5 +1,6 @@
 export interface IFileToMove {
+  targetPathString?: string;
   originalName: string;
-  newName: string;
   targetPath: string[];
+  newName: string;
 }

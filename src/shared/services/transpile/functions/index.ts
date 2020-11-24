@@ -1,6 +1,4 @@
 export * from './removeSpecialCharacter';
-export * from './removeFunctionPattern';
-export * from './findFunctionMatches';
 export * from './toFirstUpper';
 export * from './toFirstLower';
 export * from './toPascalCase';

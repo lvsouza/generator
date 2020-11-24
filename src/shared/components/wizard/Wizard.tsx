@@ -7,9 +7,11 @@ interface IWizardProps extends React.HTMLAttributes<HTMLDivElement> {
   isShowStepControls?: boolean;
   isPreviousDisabled?: boolean;
   isNextDisabled?: boolean;
+  isNextVisible?: boolean;
+  buttonNextText?: string;
   step: number;
 }
-export const Wizard: React.FC<IWizardProps> = ({ children, step = 1, isNextDisabled = false, isPreviousDisabled = false, onClickNext, onClickPrevious, isShowStepControls = true, ...rest }) => {
+export const Wizard: React.FC<IWizardProps> = ({ children, step = 1, isNextDisabled = false, isNextVisible = true, buttonNextText = 'Next', isPreviousDisabled = false, onClickNext, onClickPrevious, isShowStepControls = true, ...rest }) => {
   const wizardLength = Array.isArray(children) ? children.length : 1;
 
   if (step > wizardLength) {
@@ -50,11 +52,11 @@ export const Wizard: React.FC<IWizardProps> = ({ children, step = 1, isNextDisab
             disabled={step === 1 || isPreviousDisabled}
             className="padding-s text-white padding-horizontal-m border-radius-soft margin-left-s background-transparent border-default"
           >Back</button>
-          <button
+          {isNextVisible && <button
             onClick={handleNext}
             disabled={step === wizardLength || isNextDisabled}
             className="border-none padding-s text-white padding-horizontal-m border-radius-soft margin-left-s background-primary"
-          >Next</button>
+          >{buttonNextText}</button>}
         </div>
       }
     </div>

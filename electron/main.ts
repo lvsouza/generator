@@ -29,6 +29,7 @@ const createWindow = () => {
     webPreferences: {
       devTools: process.env.NODE_ENV === 'development',
       defaultFontFamily: { sansSerif: 'Roboto' },
+      enableRemoteModule: true,
       nodeIntegration: true
     }
   });

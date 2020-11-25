@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { observe, useObserver } from 'react-observing';
 import { VscEllipsis } from 'react-icons/vsc';
 
@@ -142,13 +142,20 @@ export const HomePage: React.FC = () => {
       applyConfigFile({
         filesToChange,
         filesToMove,
-        patterns
-      });
+        patterns: [
+          ...patterns,
+          {
+            key: 'ProjectPath',
+            value: observe(projectPath),
+            props: { displayName: 'Project path', description: '' }
+          }
+        ]
+      }, path.join(templatesPath, selectedTemplate));
       alert('All changes applied');
     } catch (e) {
       alert(e.message);
     }
-  }, [filesToChange, filesToMove, patterns]);
+  }, [filesToChange, filesToMove, patterns, templatesPath]);
 
   return (
     <div className="flex1 flex-content-center flex-items-center">
@@ -253,18 +260,18 @@ export const HomePage: React.FC = () => {
                       <b className="font-weight-g margin-right-xs">Name:</b>
                       <i>{file.name}</i>
                     </p>
-                    <p className="font-weight-s">
+                    <div className="font-weight-s">
                       <b className="font-weight-g margin-right-xs">Path:</b>
                       <i>{file.pathString}</i>
-                    </p>
-                    <p className="font-weight-s text-color">
+                    </div>
+                    <div className="font-weight-s text-color flex-column">
                       <i>{file.description}</i>
-                      <p className="font-size-s">
+                      <div className="font-size-s">
                         {file.actions.map((action, index) => (
                           <p key={index}>{action.description}</p>
                         ))}
-                      </p>
-                    </p>
+                      </div>
+                    </div>
                   </div>
                 ))}
               </div>

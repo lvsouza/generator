@@ -2,7 +2,7 @@ import path from 'path';
 import * as fs from 'fs';
 import { uuid } from 'uuidv4';
 
-import { IFileStructure } from './IFileStructure';
+import { IFileStructure } from '../IFileStructure';
 
 /**
  * Generator function that lists all files in a folder recursively

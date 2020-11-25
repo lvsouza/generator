@@ -1,4 +1,4 @@
-import { IFileStructure } from './IFileStructure';
+import { IFileStructure } from '../IFileStructure';
 import { readFile } from './ReadFile';
 
 type IJsonFileStructure<T> = Omit<IFileStructure<T>, 'childs'>;

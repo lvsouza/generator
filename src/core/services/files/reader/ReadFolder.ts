@@ -1,7 +1,7 @@
 import path from 'path';
 import * as fs from 'fs';
 
-import { IFileStructure } from './IFileStructure';
+import { IFileStructure } from '../IFileStructure';
 
 type IFolderStructure<T> = Omit<IFileStructure<T>, 'childs'>;
 

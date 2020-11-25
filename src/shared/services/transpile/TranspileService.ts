@@ -25,19 +25,29 @@ export const traspileFunctions = (valueToReplace: string): string => {
     LowerCase: toLowerCase
   };
 
-  const matchOptions = valueToReplace.match(/\$[A-Za-z]*\((.*)\)/);
-  if (!matchOptions) return valueToReplace;
+  let start = '';
 
-  const functionGroupName = matchOptions[0].match(/[^(|^$|^)]([A-Za-z]*)/);
-  if (!functionGroupName) return valueToReplace;
+  // Acha o primeiro cifrão
+  const dollarSignIndex = valueToReplace.indexOf('$');
+  if (dollarSignIndex === -1) return valueToReplace; // $
+  const rest = valueToReplace.substring(dollarSignIndex + 1);
+  start = valueToReplace.substr(0, dollarSignIndex);
 
-  const cleanValue = traspileFunctions(matchOptions[1]);
+  // Acha a abertura do primeiro parenteses
+  const openParentheses = rest.indexOf('(');
+  if (openParentheses === -1) return valueToReplace; // (
 
-  try {
-    valueToReplace = valueToReplace.replace(matchOptions[0], functionsGroup[functionGroupName[0]](cleanValue));
-  } catch (e) {
-    throw new Error(`"${functionGroupName[0]}" is not a valid function`);
-  }
+  // Transform funções internas
+  const rest2 = traspileFunctions(rest.substring(openParentheses + 1));
 
-  return valueToReplace;
+  // Pega o nome da função
+  const functionName = rest.substr(0, openParentheses);
+
+  // Acha a abertura do primeiro parenteses
+  const closeParentheses = rest2.indexOf(')');
+  if (closeParentheses === -1) return valueToReplace; // )
+  const rest3 = rest2.substring(closeParentheses + 1);
+  const content = rest2.substring(0, closeParentheses);
+
+  return start + functionsGroup[functionName](content) + rest3;
 };

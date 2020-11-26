@@ -14,7 +14,7 @@
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
-    "types": ["node"]
+    "types": ["jest", "node"]
   },
   "include": ["src/**/*", "electron/**/*"],
   "exclude": ["node_modules"]

@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { transpileByPatterns, traspileFunctions } from './TranspileService';
+import { transpileByPatterns, traspileFunctions } from './transpileService';
 import { readFile, writeFile } from '../../../core/services';
 import { IConfigFile } from '../../interfaces';
 

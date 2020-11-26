@@ -1,2 +1,2 @@
-export * from './transpile/TranspileService';
+export * from './transpile/transpileService';
 export * from './transpile/applyConfigFile';

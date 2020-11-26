@@ -56,3 +56,4 @@ app.on('ready', () => {
 });
 
 app.allowRendererProcessReuse = true;
+process.setMaxListeners(0);

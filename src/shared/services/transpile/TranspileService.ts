@@ -1,6 +1,11 @@
 import { toCamelCase, toKebabCase, toLowerCase, toUpperCase, toSnakeCase, toPascalCase, toFirstUpper, toFirstLower } from './functions';
 import { IPattern } from '../../interfaces';
 
+/**
+ * Transform specific patterns in the middle of a string
+ * @param valueToReplace Value that will be analyzed and transformed
+ * @param patterns Patterns
+ */
 export const transpileByPatterns = (valueToReplace: string, patterns: IPattern[]): string => {
   const keys = patterns.map(pattern => ({ key: pattern.key, value: pattern.value?.value }));
 
@@ -13,7 +18,22 @@ export const transpileByPatterns = (valueToReplace: string, patterns: IPattern[]
   return valueToReplace;
 };
 
+/**
+ * Transform specific patterns in the middle of a string
+ *  - Accepted standards:
+ *    - "PascalCase"
+ *    - "FirstUpper"
+ *    - "FirstLower"
+ *    - "CamelCase"
+ *    - "SnakeCase"
+ *    - "KebabCase"
+ *    - "UpperCase"
+ *    - "LowerCase"
+ *
+ * @param valueToReplace Value that will be analyzed and transformed
+ */
 export const traspileFunctions = (valueToReplace: string): string => {
+  const functiondNames = ['PascalCase', 'FirstUpper', 'FirstLower', 'CamelCase', 'SnakeCase', 'KebabCase', 'UpperCase', 'LowerCase'];
   const functionsGroup: { [key: string]: (value: string) => string } = {
     PascalCase: toPascalCase,
     FirstUpper: toFirstUpper,
@@ -25,25 +45,24 @@ export const traspileFunctions = (valueToReplace: string): string => {
     LowerCase: toLowerCase
   };
 
-  let start = '';
-
-  // Acha o primeiro cifrão
-  const dollarSignIndex = valueToReplace.indexOf('$');
-  if (dollarSignIndex === -1) return valueToReplace; // $
+  // Find the first pattern
+  const dollarSignIndex = valueToReplace.match(/\$[A-Za-z]*\(/)?.index;
+  if (!dollarSignIndex) return valueToReplace; // $
   const rest = valueToReplace.substring(dollarSignIndex + 1);
-  start = valueToReplace.substr(0, dollarSignIndex);
+  const start = valueToReplace.substr(0, dollarSignIndex);
 
-  // Acha a abertura do primeiro parenteses
+  // Find the opening of the first parenthesis
   const openParentheses = rest.indexOf('(');
   if (openParentheses === -1) return valueToReplace; // (
 
-  // Transform funções internas
-  const rest2 = traspileFunctions(rest.substring(openParentheses + 1));
-
   // Pega o nome da função
   const functionName = rest.substr(0, openParentheses);
+  if (!functiondNames.includes(functionName)) return valueToReplace;
 
-  // Acha a abertura do primeiro parenteses
+  // At that moment I send to this function recursively the rest of the content that can be transformed into other functions
+  const rest2 = traspileFunctions(rest.substring(openParentheses + 1));
+
+  // Find the closing of the first parentheses
   const closeParentheses = rest2.indexOf(')');
   if (closeParentheses === -1) return valueToReplace; // )
   const rest3 = rest2.substring(closeParentheses + 1);

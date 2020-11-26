@@ -265,8 +265,8 @@ export const HomePage: React.FC = () => {
                       <i>{file.pathString}</i>
                     </div>
                     <div className="font-weight-s text-color flex-column">
-                      <i>{file.description}</i>
-                      <div className="font-size-s">
+                      <p className="margin-top-s margin-bottom-xs">{file.description}</p>
+                      <div className="font-size-s flex-column">
                         {file.actions.map((action, index) => (
                           <p key={index}>{action.description}</p>
                         ))}

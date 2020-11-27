@@ -3,23 +3,6 @@ import { IPattern } from '../../interfaces';
 
 /**
  * Transform specific patterns in the middle of a string
- * @param valueToReplace Value that will be analyzed and transformed
- * @param patterns Patterns
- */
-export const transpileByPatterns = (valueToReplace: string, patterns: IPattern[]): string => {
-  const keys = patterns.map(pattern => ({ key: pattern.key, value: pattern.value?.value }));
-
-  keys.forEach(({ key, value }) => {
-    if (value) {
-      valueToReplace = valueToReplace.replace(new RegExp('{{' + key + '}}', 'g'), value);
-    }
-  });
-
-  return valueToReplace;
-};
-
-/**
- * Transform specific patterns in the middle of a string
  *  - Accepted standards:
  *    - "PascalCase"
  *    - "FirstUpper"
@@ -32,7 +15,7 @@ export const transpileByPatterns = (valueToReplace: string, patterns: IPattern[]
  *
  * @param valueToReplace Value that will be analyzed and transformed
  */
-export const traspileFunctions = (valueToReplace: string): string => {
+const traspileFunctions = (valueToReplace: string): string => {
   const functiondNames = ['PascalCase', 'FirstUpper', 'FirstLower', 'CamelCase', 'SnakeCase', 'KebabCase', 'UpperCase', 'LowerCase'];
   const functionsGroup: { [key: string]: (value: string) => string } = {
     PascalCase: toPascalCase,
@@ -69,4 +52,21 @@ export const traspileFunctions = (valueToReplace: string): string => {
   const content = rest2.substring(0, closeParentheses);
 
   return start + functionsGroup[functionName](content) + rest3;
+};
+
+/**
+ * Transform specific patterns in the middle of a string
+ * @param valueToReplace Value that will be analyzed and transformed
+ * @param patterns Patterns
+ */
+export const transpileByPatterns = (valueToReplace: string, patterns: IPattern[]): string => {
+  const keys = patterns.map(pattern => ({ key: pattern.key, value: pattern.value?.value }));
+
+  keys.forEach(({ key, value }) => {
+    if (value) {
+      valueToReplace = valueToReplace.replace(new RegExp('{{' + key + '}}', 'g'), value);
+    }
+  });
+
+  return traspileFunctions(valueToReplace);
 };

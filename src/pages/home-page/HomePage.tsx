@@ -5,7 +5,7 @@ import { VscEllipsis } from 'react-icons/vsc';
 import { remote } from 'electron';
 import path from 'path';
 
-import { applyConfigFile, transpileByPatterns, traspileFunctions } from '../../shared/services';
+import { applyConfigFile, transpileByPatterns } from '../../shared/services';
 import { readFolder, readJsonFile, configsStore } from '../../core/services';
 import { Wizard, WizardItem } from '../../shared/components';
 import { ProjectLocationStore } from '../../shared/stores';
@@ -22,16 +22,14 @@ export const HomePage: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(1);
 
   const transpilePatternsAndFunctions = useCallback((value: string): string => {
-    return traspileFunctions(
-      transpileByPatterns(value, [
-        ...patterns,
-        {
-          key: 'ProjectPath',
-          value: observe(projectPath),
-          props: { displayName: 'Project path', description: '' }
-        }
-      ])
-    );
+    return transpileByPatterns(value, [
+      ...patterns,
+      {
+        key: 'ProjectPath',
+        value: observe(projectPath),
+        props: { displayName: 'Project path', description: '' }
+      }
+    ]);
   }, [patterns, projectPath]);
 
   const handleSelectPath = useCallback(async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {

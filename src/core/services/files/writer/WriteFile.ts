@@ -13,6 +13,6 @@ export const writeFile = (basePath: string, file: Omit<IFileStructure<string>, '
     fs.writeFileSync(basePath, file.content, { flag: 'w' });
   } catch (e) {
     console.log(e);
-    throw new Error(`Failed to write the file to "${basePath}".`);
+    throw new Error(`Failed to write the file to "${basePath}".\n${e.message}`);
   }
 };

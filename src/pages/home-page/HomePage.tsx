@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { observe, useObserver } from 'react-observing';
 import { VscEllipsis } from 'react-icons/vsc';
 
@@ -78,10 +78,9 @@ export const HomePage: React.FC = () => {
         setCurrentStep(4);
       }
     } else {
-      alert('"filesToMove" key was not found in config file');
-      setCurrentStep(3);
+      setFilesToMove([]);
     }
-  }, [patterns, selectedTemplate, templatesPath, projectPath, setFilesToMove, transpilePatternsAndFunctions]);
+  }, [selectedTemplate, templatesPath, setFilesToMove, transpilePatternsAndFunctions]);
 
   const initFilesToChange = useCallback(() => {
     const configFile = readJsonFile<IConfigFile>(path.join(templatesPath, selectedTemplate, 'config.json'));
@@ -98,10 +97,9 @@ export const HomePage: React.FC = () => {
         setCurrentStep(4);
       }
     } else {
-      alert('"filesToMove" key was not found in config file');
-      setCurrentStep(3);
+      setFilesToChange([]);
     }
-  }, [patterns, selectedTemplate, templatesPath, projectPath, setFilesToMove, setFilesToChange, transpilePatternsAndFunctions]);
+  }, [selectedTemplate, templatesPath, setFilesToChange, transpilePatternsAndFunctions]);
 
   const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -109,11 +107,15 @@ export const HomePage: React.FC = () => {
     switch (currentStep) {
       case 1:
         setCurrentStep(2);
-        configsStore.set('projectPath', projectPath);
+        if (projectPath) {
+          configsStore.set('projectPath', projectPath);
+        }
         break;
       case 2:
         setCurrentStep(3);
-        configsStore.set('templatePath', templatesPath);
+        if (templatesPath) {
+          configsStore.set('templatePath', templatesPath);
+        }
         break;
       case 3:
         setCurrentStep(4);
@@ -155,7 +157,15 @@ export const HomePage: React.FC = () => {
     } catch (e) {
       alert(e.message);
     }
-  }, [filesToChange, filesToMove, patterns, templatesPath]);
+  }, [filesToChange, filesToMove, patterns, projectPath, selectedTemplate, templatesPath]);
+
+  const readTemplateByTemplatesPath = useCallback((path: string) => {
+    try {
+      return readFolder(path);
+    } catch (e) {
+      return [];
+    }
+  }, []);
 
   return (
     <div className="flex1 flex-content-center flex-items-center">
@@ -210,7 +220,7 @@ export const HomePage: React.FC = () => {
                   onChange={e => setSelectedTemplate(e.target.value)}
                 >
                   <option value="">Select</option>
-                  {readFolder(templatesPath).map((template, index) => (
+                  {readTemplateByTemplatesPath(templatesPath).map((template, index) => (
                     <option key={index} value={template.name}>{template.name}</option>
                   ))}
                 </select>
@@ -249,6 +259,7 @@ export const HomePage: React.FC = () => {
                     </p>
                   </div>
                 ))}
+                {filesToMove.length === 0 && <p className="text-color text-align-center"><i>No files to move</i></p>}
               </div>
             </WizardItem>
             <WizardItem>
@@ -274,6 +285,7 @@ export const HomePage: React.FC = () => {
                     </div>
                   </div>
                 ))}
+                {filesToChange.length === 0 && <p className="text-color text-align-center"><i>No files to change</i></p>}
               </div>
             </WizardItem>
             <WizardItem>

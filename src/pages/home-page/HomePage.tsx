@@ -88,7 +88,12 @@ export const HomePage: React.FC = () => {
       try {
         setFilesToChange(filesToChange.map(file => ({
           ...file,
-          pathString: transpilePatternsAndFunctions(path.join(...file.path))
+          pathString: transpilePatternsAndFunctions(path.join(...file.path)),
+          description: transpilePatternsAndFunctions(file.description),
+          actions: file.actions.map(action => ({
+            ...action,
+            description: transpilePatternsAndFunctions(action.description)
+          }))
         })));
       } catch (e) {
         alert(e.message);

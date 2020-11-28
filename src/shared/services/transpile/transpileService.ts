@@ -30,7 +30,7 @@ const traspileFunctions = (valueToReplace: string): string => {
 
   // Find the first pattern
   const dollarSignIndex = valueToReplace.match(/\$[A-Za-z]*\(/)?.index;
-  if (!dollarSignIndex) return valueToReplace; // $
+  if (!Number.isInteger(dollarSignIndex) || dollarSignIndex === -1 || dollarSignIndex === undefined || dollarSignIndex === null) return valueToReplace; // $
   const rest = valueToReplace.substring(dollarSignIndex + 1);
   const start = valueToReplace.substr(0, dollarSignIndex);
 

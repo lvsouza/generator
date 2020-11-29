@@ -152,7 +152,7 @@ export const HomePage: React.FC = () => {
           {
             key: 'ProjectPath',
             value: observe(projectPath),
-            props: { displayName: 'Project path', description: '' }
+            props: { displayName: 'Project path' }
           }
         ]
       }, path.join(templatesPath, selectedTemplate));

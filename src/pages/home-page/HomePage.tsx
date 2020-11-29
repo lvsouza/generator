@@ -234,7 +234,7 @@ export const HomePage: React.FC = () => {
                 <h3 className="text-align-center">Patterns to replace</h3>
                 <div className="flex-column margin-top-m overflow-auto" style={{ maxHeight: '35vh' }}>
                   {patterns.map((pattern, index) => (
-                    <PatternInput key={index} patternProps={pattern.props} value={pattern.value || observe('')} />
+                    <PatternInput key={index} id={index} patternProps={pattern.props} value={pattern.value || observe('')} />
                   ))}
                 </div>
               </div>

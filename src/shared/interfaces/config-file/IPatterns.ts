@@ -5,6 +5,10 @@ export interface IPatternProps {
   displayName: string;
   /** This will help the users to know more details about the key */
   description?: string;
+  /** Field is used to suggest options in the inputs */
+  suggestions?: string[];
+  /** Field type */
+  type?: 'text' | 'number' | 'select';
 }
 
 export interface IPattern {

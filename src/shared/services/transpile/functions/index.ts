@@ -7,3 +7,4 @@ export * from './toUpperCase';
 export * from './toLowerCase';
 export * from './toSnakeCase';
 export * from './toCamelCase';
+export * from './ifFunction';

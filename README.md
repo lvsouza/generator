@@ -148,4 +148,6 @@ $LowerCase(text)
 
 $FirstUpper(text)
 $FirstLower(text)
+
+$If(text|text1|Text se true|Text se falso)
 ```

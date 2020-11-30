@@ -1,4 +1,4 @@
-import { toCamelCase, toKebabCase, toLowerCase, toUpperCase, toSnakeCase, toPascalCase, toFirstUpper, toFirstLower } from './functions';
+import { toCamelCase, toKebabCase, toLowerCase, toUpperCase, toSnakeCase, toPascalCase, toFirstUpper, toFirstLower, ifFunction } from './functions';
 import { IPattern } from '../../interfaces';
 
 /**
@@ -16,7 +16,7 @@ import { IPattern } from '../../interfaces';
  * @param valueToReplace Value that will be analyzed and transformed
  */
 const traspileFunctions = (valueToReplace: string): string => {
-  const functiondNames = ['PascalCase', 'FirstUpper', 'FirstLower', 'CamelCase', 'SnakeCase', 'KebabCase', 'UpperCase', 'LowerCase'];
+  const functiondNames = ['PascalCase', 'FirstUpper', 'FirstLower', 'CamelCase', 'SnakeCase', 'KebabCase', 'UpperCase', 'LowerCase', 'If'];
   const functionsGroup: { [key: string]: (value: string) => string } = {
     PascalCase: toPascalCase,
     FirstUpper: toFirstUpper,
@@ -25,7 +25,8 @@ const traspileFunctions = (valueToReplace: string): string => {
     SnakeCase: toSnakeCase,
     KebabCase: toKebabCase,
     UpperCase: toUpperCase,
-    LowerCase: toLowerCase
+    LowerCase: toLowerCase,
+    If: ifFunction
   };
 
   // Find the first pattern

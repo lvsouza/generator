@@ -100,7 +100,30 @@ A seção deve ser composta por estas propriedades:
 }
 ```
 
-## Deixando template dinâmico
+### **Etapa 5** - propertiesPatterns
+
+A seção deve ser composta por estas propriedades:
+
+``` jsonc
+{
+    "dataTypes": [ // Usado para definir tipagem dos campos
+        "number",
+        "string",
+        "boolean",
+        "Date"
+    ],
+    "propertiesPatterns": [ // A "Key" pode ser usada como pattern para informar o local onde a lista de campos deve ser gerada
+        {
+            "key": "ClasseProps", // Valor que será buscado e alterado no meio do seu template
+            "content": [
+                "  $CamelCase<({{PropName}})>$If<({{PropAllowNull}}|true|?|)>: {{PropType}}$If<({{PropDefaultValue}}||| = {{PropDefaultValue}})>;" // Conteúdo que será transformado e adicionado no local onde a key estiver
+            ]
+        }
+    ],
+}
+```
+
+## Deixando o template dinâmico
 
 No seu template basta subistituir as palavras chaves pelas "keys" que você cadastrou anteriormente na seção de patterns
 
@@ -109,14 +132,15 @@ Ex:
 Antes
 ``` TS
 interface IMinhaInterface {
-
+	id: number;
+	name: string;
 } 
 ```
 
 Depois
 ``` TS
-interface I$PascalCase({{Entidade}}) {
-  
+interface I$PascalCase<({{Entidade}})> {
+{{ClasseProps}}
 } 
 ```
 
@@ -126,6 +150,7 @@ interface I$PascalCase({{Entidade}}) {
 1. Selecione a pasta onde está os template que você configurou e avance
 1. Selecione o template que desejar e avance
 1. Preencha os campos e avance
+1. Caso tenha informado alguma `propertiesPatterns` estará disponível uma tabela para que você possa informar campos que podem ser gerados em loop na geração do código. É importante informar os `dataTypes` para que os campos possam preenchidos corretamente
 1. Nas telas a seguir confira as alterações que serão feitas
 1. Na ultima tela clique em "Write changes" para aplicar o template
 
@@ -138,16 +163,16 @@ interface I$PascalCase({{Entidade}}) {
 
 * Funções
 ```
-$PascalCase(text)
-$CamelCase(text)
-$SnakeCase(text)
-$KebabCase(text)
+$PascalCase<(text)>
+$CamelCase<(text)>
+$SnakeCase<(text)>
+$KebabCase<(text)>
 
-$UpperCase(text)
-$LowerCase(text)
+$UpperCase<(text)>
+$LowerCase<(text)>
 
-$FirstUpper(text)
-$FirstLower(text)
+$FirstUpper<(text)>
+$FirstLower<(text)>
 
-$If(text|text1|Text se true|Text se falso)
+$If<(text|text1|Text se true|Text se falso)>
 ```

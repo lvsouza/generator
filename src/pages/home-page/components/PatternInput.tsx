@@ -4,8 +4,8 @@ import { IObservable, useObserver } from 'react-observing';
 import { IPatternProps } from '../../../shared/interfaces';
 
 interface IPatternInputProps {
+  value: IObservable<string | number | boolean>;
   patternProps: IPatternProps;
-  value: IObservable<string>;
   id: string | number;
 }
 export const PatternInput: React.FC<IPatternInputProps> = ({ value, id, patternProps: { displayName, description, suggestions = [], type = 'text' } }) => {

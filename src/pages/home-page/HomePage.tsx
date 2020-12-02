@@ -10,14 +10,17 @@ import { readFolder, readJsonFile, configsStore } from '../../core/services';
 import { Wizard, WizardItem } from '../../shared/components';
 import { ProjectLocationStore } from '../../shared/stores';
 import { PatternInput } from './components/PatternInput';
-import { IConfigFile } from '../../shared/interfaces';
+import { IConfigFile, IPropertie } from '../../shared/interfaces';
+import { PatternRow } from './components/PatternRow';
 
 export const HomePage: React.FC = () => {
+  const [propertiesPatterns, setPropertiesPatterns] = useObserver(ProjectLocationStore.propertiesPatterns);
   const [selectedTemplate, setSelectedTemplate] = useObserver(ProjectLocationStore.selectedTemplate);
   const [templatesPath, setTemplatesPath] = useObserver(ProjectLocationStore.templatesPath);
   const [filesToChange, setFilesToChange] = useObserver(ProjectLocationStore.filesToChange);
   const [projectPath, setProjectPath] = useObserver(ProjectLocationStore.projectPath);
   const [filesToMove, setFilesToMove] = useObserver(ProjectLocationStore.filesToMove);
+  const [dataTypes, setDataTypes] = useObserver(ProjectLocationStore.dataTypes);
   const [patterns, setPatterns] = useObserver(ProjectLocationStore.patterns);
   const [currentStep, setCurrentStep] = useState(1);
 
@@ -104,6 +107,25 @@ export const HomePage: React.FC = () => {
     }
   }, [selectedTemplate, templatesPath, setFilesToChange, transpilePatternsAndFunctions]);
 
+  const initPropertiesPatterns = useCallback(() => {
+    const configFile = readJsonFile<IConfigFile>(path.join(templatesPath, selectedTemplate, 'config.json'));
+
+    const _propertiesPatterns = configFile.content?.propertiesPatterns;
+    if (_propertiesPatterns) {
+      setPropertiesPatterns({
+        patterns: _propertiesPatterns,
+        properties: []
+      });
+    } else {
+      setPropertiesPatterns({ patterns: [], properties: [] });
+    }
+
+    const _dataTypes = configFile.content?.dataTypes;
+    if (_dataTypes) {
+      setDataTypes(_dataTypes);
+    }
+  }, [selectedTemplate, templatesPath, setPropertiesPatterns, setDataTypes]);
+
   const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -126,17 +148,21 @@ export const HomePage: React.FC = () => {
         break;
       case 4:
         setCurrentStep(5);
-        initFilesToMove();
+        initPropertiesPatterns();
         break;
       case 5:
         setCurrentStep(6);
-        initFilesToChange();
+        initFilesToMove();
         break;
       case 6:
         setCurrentStep(7);
+        initFilesToChange();
+        break;
+      case 7:
+        setCurrentStep(8);
         break;
     };
-  }, [currentStep, projectPath, templatesPath, initFilesToMove, initFilesToChange, initPatterns]);
+  }, [currentStep, projectPath, templatesPath, initPropertiesPatterns, initFilesToMove, initFilesToChange, initPatterns]);
 
   const handlePrevius = useCallback((step: number) => {
     setCurrentStep(step);
@@ -145,14 +171,17 @@ export const HomePage: React.FC = () => {
   const handleWriteChanges = useCallback(() => {
     try {
       applyConfigFile({
+        propertiesPatterns: propertiesPatterns.patterns,
+        properties: propertiesPatterns.properties,
         filesToChange,
         filesToMove,
+        dataTypes,
         patterns: [
           ...patterns,
           {
             key: 'ProjectPath',
             value: observe(projectPath),
-            props: { displayName: 'Project path' }
+            props: { displayName: '' }
           }
         ]
       }, path.join(templatesPath, selectedTemplate));
@@ -160,7 +189,7 @@ export const HomePage: React.FC = () => {
     } catch (e) {
       alert(e.message);
     }
-  }, [filesToChange, filesToMove, patterns, projectPath, selectedTemplate, templatesPath]);
+  }, [filesToChange, filesToMove, patterns, projectPath, selectedTemplate, templatesPath, dataTypes]);
 
   const readTemplateByTemplatesPath = useCallback((path: string) => {
     try {
@@ -178,10 +207,10 @@ export const HomePage: React.FC = () => {
           <Wizard
             step={currentStep}
             onClickPrevious={handlePrevius}
-            isNextVisible={currentStep !== 7}
-            buttonNextText={currentStep === 7 ? 'Finish' : undefined}
+            isNextVisible={currentStep !== 8}
+            buttonNextText={currentStep === 8 ? 'Finish' : undefined}
           >
-            <WizardItem>
+            <WizardItem key={1}>
               <label>
                 Projects path<br />
                 <input
@@ -197,7 +226,7 @@ export const HomePage: React.FC = () => {
                 ><VscEllipsis /></button>
               </label>
             </WizardItem>
-            <WizardItem>
+            <WizardItem key={2}>
               <label>
                 Template path<br />
                 <input
@@ -213,7 +242,7 @@ export const HomePage: React.FC = () => {
                 ><VscEllipsis /></button>
               </label>
             </WizardItem>
-            <WizardItem>
+            <WizardItem key={3}>
               <label>
                 Choose a template<br />
                 <select
@@ -229,7 +258,7 @@ export const HomePage: React.FC = () => {
                 </select>
               </label>
             </WizardItem>
-            <WizardItem>
+            <WizardItem key={4}>
               <div className="flex-column">
                 <h3 className="text-align-center">Patterns to replace</h3>
                 <div className="flex-column margin-top-m overflow-auto" style={{ maxHeight: '35vh' }}>
@@ -239,7 +268,74 @@ export const HomePage: React.FC = () => {
                 </div>
               </div>
             </WizardItem>
-            <WizardItem>
+            <WizardItem key={5}>
+              <div className="flex-column">
+                <p className="text-align-center margin-bottom-s">Create or custumize your fields</p>
+                <div className="overflow-auto padding-s" style={{ minHeight: '30vh', maxHeight: '50vh', maxWidth: '90vw' }}>
+                  <table cellSpacing={0}>
+                    <thead className="background-panels">
+                      <th className="padding-xs border-default word-break-no" />
+                      <th className="padding-xs border-default word-break-no" align="center">Name</th>
+                      <th className="padding-xs border-default word-break-no" align="center">Type</th>
+                      <th className="padding-xs border-default word-break-no" align="center">Allow null</th>
+                      <th className="padding-xs border-default word-break-no" align="center">Max width</th>
+                      <th className="padding-xs border-default word-break-no" align="center">Min width</th>
+                      <th className="padding-xs border-default word-break-no" align="center">Default value</th>
+                      {propertiesPatterns.patterns.map((pattern, index) => (
+                        <th key={index} className="padding-xs border-default word-break-no" align="center">
+                          {pattern.key}
+                        </th>
+                      ))}
+                    </thead>
+                    <tbody>
+                      {propertiesPatterns.properties.map((prop, index, array) => (
+                        <PatternRow
+                          key={index}
+                          propertie={prop}
+                          patterns={propertiesPatterns.patterns}
+                          onDelete={() => {
+                            array.splice(index, 1);
+                            setPropertiesPatterns({
+                              ...propertiesPatterns,
+                              properties: array
+                            });
+                          }}
+                        />
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <input
+                  type="button"
+                  value="New item"
+                  className="padding-xs margin-top-xs"
+                  style={{ width: 100 }}
+                  onClick={() => {
+                    const newItem: IPropertie = {
+                      defaultValue: observe(''),
+                      allowNull: observe(false),
+                      minLength: observe(''),
+                      maxLength: observe(''),
+                      name: observe(''),
+                      type: observe('')
+                    };
+
+                    propertiesPatterns.patterns.forEach(pattern => {
+                      newItem[pattern.key] = observe(true);
+                    });
+
+                    setPropertiesPatterns({
+                      ...propertiesPatterns,
+                      properties: [
+                        ...propertiesPatterns.properties,
+                        newItem
+                      ]
+                    });
+                  }}
+                />
+              </div>
+            </WizardItem>
+            <WizardItem key={6}>
               <div className="flex-column">
                 <h3 className="text-align-center padding-s text-align-center">Files to move</h3>
                 {filesToMove.map((file, index) => (
@@ -265,7 +361,7 @@ export const HomePage: React.FC = () => {
                 {filesToMove.length === 0 && <p className="text-color text-align-center"><i>No files to move</i></p>}
               </div>
             </WizardItem>
-            <WizardItem>
+            <WizardItem key={7}>
               <div className="flex-column">
                 <h3 className="text-align-center padding-s text-align-center">Files to change</h3>
                 {filesToChange.map((file, index) => (
@@ -291,7 +387,7 @@ export const HomePage: React.FC = () => {
                 {filesToChange.length === 0 && <p className="text-color text-align-center"><i>No files to change</i></p>}
               </div>
             </WizardItem>
-            <WizardItem>
+            <WizardItem key={8}>
               <div className="flex-column flex-content-center flex1" style={{ minWidth: 200, minHeight: 100 }}>
                 <button onClick={handleWriteChanges} className="padding-s background-primary border-none border-radius-soft text-white shadow-l">Write changes</button>
                 <button onClick={() => setCurrentStep(1)} className="padding-s margin-top-m background-transparent border-radius-soft text-white border-default">Reset</button>

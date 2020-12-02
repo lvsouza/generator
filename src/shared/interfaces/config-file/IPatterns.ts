@@ -15,7 +15,7 @@ export interface IPattern {
   /** Key name used as a pattern to replace */
   key: string;
   /** User inserted value */
-  value?: IObservable<string>;
+  value?: IObservable<string | number | boolean>;
   /** Properties that will help to define values to replace the key */
   props: IPatternProps,
 }

@@ -1,13 +1,72 @@
+import { observe } from 'react-observing';
+
 import path from 'path';
 
 import { readFile, writeFile } from '../../../core/services';
+import { IConfigFile, IPropertie } from '../../interfaces';
 import { transpileByPatterns } from './transpileService';
-import { IConfigFile } from '../../interfaces';
 
-export const applyConfigFile = (configs: IConfigFile, templatePath: string): void => {
+export const applyConfigFile = (configs: IConfigFile & { properties: IPropertie[] }, templatePath: string): void => {
   const transpilePatternsAndFunctions = (value: string): string => {
     return transpileByPatterns(value, configs.patterns);
   };
+
+  configs.propertiesPatterns.forEach(propPattern => {
+    const content: string[] = [];
+
+    configs.properties.forEach(propertie => {
+      if (!propertie[propPattern.key].value) return;
+
+      propPattern.contentString = '';
+      propPattern.content.forEach(contentLine => {
+        if (propPattern.contentString !== '') {
+          propPattern.contentString = propPattern.contentString + '\n';
+        }
+
+        propPattern.contentString = propPattern.contentString + transpileByPatterns(contentLine, [
+          ...configs.patterns,
+          {
+            key: 'PropType',
+            value: propertie.type,
+            props: { displayName: '' }
+          },
+          {
+            key: 'PropName',
+            value: propertie.name,
+            props: { displayName: '' }
+          },
+          {
+            key: 'PropMinLength',
+            value: propertie.minLength,
+            props: { displayName: '' }
+          },
+          {
+            key: 'PropMaxLength',
+            value: propertie.maxLength,
+            props: { displayName: '' }
+          },
+          {
+            key: 'PropDefaultValue',
+            value: propertie.defaultValue,
+            props: { displayName: '' }
+          },
+          {
+            key: 'PropAllowNull',
+            value: propertie.allowNull,
+            props: { displayName: '' }
+          }
+        ]);
+      });
+
+      content.push(propPattern.contentString);
+    });
+
+    configs.patterns.push({
+      key: propPattern.key,
+      props: { displayName: '' },
+      value: observe(content.join('\n'))
+    });
+  });
 
   configs.filesToMove.forEach((fileToMove, index) => {
     if (!fileToMove.targetPathString) return;

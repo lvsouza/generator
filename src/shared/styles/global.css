@@ -131,6 +131,15 @@ input[type="button"]:active, button:active {
     overflow: auto;
 }
 
+.pointer {
+    cursor: pointer;
+}
+
+.hover:hover, .focus:focus {
+    background-color: var(--color-background-bars);
+    filter: contrast(0.9);
+}
+
 ::-webkit-scrollbar {
     width: var(--size-xs);
     height: var(--size-xs);

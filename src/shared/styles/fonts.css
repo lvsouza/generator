@@ -46,6 +46,11 @@
     text-transform: uppercase;
 }
 
+.word-break-no {
+    word-break: keep-all;
+    white-space: nowrap;
+}
+
 .font-weight-s {
     font-weight: var(--font-weight-s);
 }

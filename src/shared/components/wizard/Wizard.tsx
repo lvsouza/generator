@@ -46,7 +46,7 @@ export const Wizard: React.FC<IWizardProps> = ({ children, step = 1, isNextDisab
         {Array.isArray(children) ? children[step - 1] : children}
       </div>
       {isShowStepControls &&
-        <div className="margin-top-m flex-content-end">
+        <div className="margin-top-s flex-content-end">
           <button
             onClick={handlePrevious}
             disabled={step === 1 || isPreviousDisabled}

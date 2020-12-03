@@ -23,8 +23,8 @@ No final o seu arquivo deve estar assim:
 {
   "patterns": [],
   "propertiesList": {
-	  "dataTypes": [],
-	  "patterns": []
+    "dataTypes": [],
+    "patterns": []
   },
   "filesToMove": [],
   "filesToChange": []
@@ -39,14 +39,14 @@ A seção deve ser composta por estas propriedades:
 {
   "patterns": [
     {
-			"key": "Entidade", // Valor que será buscado e alterado no meio do seu template
-			"props": { // Configura a maneira como a input será mostrada na ferramenta
-				"type": "text", // tipo de campo mostrado ao usuário. Pode ser "text", "number" ou "select"
-				"suggestions": [], // Usado para adicionar sugestões dentro das inputs ou para gerar as opções das inputs do tipo select
-				"displayName": "Nome da entidade", // Label exibido na input ao usuário na ferramenta
-				"description": "Digite o nome da entidade" // Valor será mostrado como ajuda ao usuário da ferramenta
-			}
-		}
+      "key": "Entidade", // Valor que será buscado e alterado no meio do seu template
+      "props": { // Configura a maneira como a input será mostrada na ferramenta
+        "type": "text", // tipo de campo mostrado ao usuário. Pode ser "text", "number" ou "select"
+        "suggestions": [], // Usado para adicionar sugestões dentro das inputs ou para gerar as opções das inputs do tipo select
+        "displayName": "Nome da entidade", // Label exibido na input ao usuário na ferramenta
+        "description": "Digite o nome da entidade" // Valor será mostrado como ajuda ao usuário da ferramenta
+      }
+    }
   ]
 }
 ```
@@ -59,15 +59,15 @@ A seção deve ser composta por estas propriedades:
 {
   "filesToMove": [ // Contém cada arquivo que será criado ou alterado
     {
-			"originalName": "template01.ts", // Nome usado no arquivo contido dentro da pasta do template
-			"newName": "$PascalCase({{Entidade}}).ts", // Vai formar o novo nome do arquivo
-			"targetPath": [ // Caminho para onde o arquivo deve ser salvo, se o caminho não existir será criado
-				"{{ProjectPath}}",
-				"src",
-				"shared",
-				"models"
-			]
-		}
+      "originalName": "template01.ts", // Nome usado no arquivo contido dentro da pasta do template
+      "newName": "$PascalCase({{Entidade}}).ts", // Vai formar o novo nome do arquivo
+      "targetPath": [ // Caminho para onde o arquivo deve ser salvo, se o caminho não existir será criado
+        "{{ProjectPath}}",
+        "src",
+        "shared",
+        "models"
+      ]
+    }
   ]
 }
 ```
@@ -79,27 +79,27 @@ A seção deve ser composta por estas propriedades:
 ``` jsonc
 {
   "filesToChange": [ // Contém cada arquivo que será alterado
-		{
-			"name": "index.ts", // Nome do arquivo que será alterado
-			"description": "Adiciona exportações", // Descrição das alterações no arquivo
-			"path": [ // Caminho para o arquivo que será alterado
-				"{{ProjectPath}}",
-				"src",
-				"shared",
-				"models",
-				"index.ts"
-			],
-			"actions": [ // Lista de ações que serão feitas no arquivo
-				{
-					"position": "before", // Posição da nova linha. Pode ser antes ou depois do alvo
-					"target": "/* Line up */", // texto que será usado para encontrar a linha onde deve ser adicionado o novo conteúdo
-					"description": "Exporta arquivo $PascalCase({{Entidade}}).ts", // Descreve o que está ação fará no arquivo
-					"content": [ // Conteúdo que será adicionado no arquivo. Cada item do array representa uma novo linha
-						"export * from './$PascalCase({{Entidade}})';"
-					]
-				}
+    {
+      "name": "index.ts", // Nome do arquivo que será alterado
+      "description": "Adiciona exportações", // Descrição das alterações no arquivo
+      "path": [ // Caminho para o arquivo que será alterado
+        "{{ProjectPath}}",
+        "src",
+        "shared",
+        "models",
+        "index.ts"
+      ],
+      "actions": [ // Lista de ações que serão feitas no arquivo
+        {
+          "position": "before", // Posição da nova linha. Pode ser antes ou depois do alvo
+          "target": "/* Line up */", // texto que será usado para encontrar a linha onde deve ser adicionado o novo conteúdo
+          "description": "Exporta arquivo $PascalCase({{Entidade}}).ts", // Descreve o que está ação fará no arquivo
+          "content": [ // Conteúdo que será adicionado no arquivo. Cada item do array representa uma novo linha
+            "export * from './$PascalCase({{Entidade}})';"
+          ]
+        }
       ]
-		}
+    }
   ]
 }
 ```
@@ -110,26 +110,26 @@ A seção deve ser composta por estas propriedades:
 
 ``` jsonc
 {
-    "propertiesList": {
-        "dataTypes": [ // Usado para definir tipagem dos campos
-            "number",
-            "string",
-            "boolean",
-            "Date"
-        ],
-        "patterns": [ // A "Key" pode ser usada como pattern para informar o local onde a lista de campos deve ser gerada
-            {
-                "key": "ClasseProps", // Valor que será buscado e alterado no meio do seu template
-                "props": {// Propriedades da propriedade
-                    "displayName": "Interface", // Nome que será mostrado ao usuário. Não obrigatório
-                    "description": "Inclui está propriedade na interface" // Descrição mais detalhada da propriedade. Não obrigatório.
-                },
-                "content": [
-                    "  $CamelCase<({{PropName}})>$If<({{PropAllowNull}}|true|?|)>: {{PropType}}$If<({{PropDefaultValue}}||| = {{PropDefaultValue}})>;" // Conteúdo que será transformado e adicionado no local onde a key estiver
-                ]
-            }
+  "propertiesList": {
+    "dataTypes": [ // Usado para definir tipagem dos campos
+      "number",
+      "string",
+      "boolean",
+      "Date"
+    ],
+    "patterns": [ // A "Key" pode ser usada como pattern para informar o local onde a lista de campos deve ser gerada
+      {
+        "key": "ClasseProps", // Valor que será buscado e alterado no meio do seu template
+        "props": {// Propriedades da propriedade
+          "displayName": "Interface", // Nome que será mostrado ao usuário. Não obrigatório
+          "description": "Inclui está propriedade na interface" // Descrição mais detalhada da propriedade. Não obrigatório.
+        },
+          "content": [
+          "  $CamelCase<({{PropName}})>$If<({{PropAllowNull}}|true|?|)>: {{PropType}}$If<({{PropDefaultValue}}||| = {{PropDefaultValue}})>;" // Conteúdo que será transformado e adicionado no local onde a key estiver
         ]
-    }
+      }
+    ]
+  }
 }
 ```
 
@@ -142,8 +142,8 @@ Ex:
 Antes
 ``` TS
 interface IMinhaInterface {
-	id: number;
-	name: string;
+  id: number;
+  name: string;
 } 
 ```
 

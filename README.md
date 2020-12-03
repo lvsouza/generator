@@ -22,6 +22,10 @@ No final o seu arquivo deve estar assim:
 ``` jsonc 
 {
   "patterns": [],
+  "propertiesList": {
+	  "dataTypes": [],
+	  "patterns": []
+  },
   "filesToMove": [],
   "filesToChange": []
 }
@@ -106,20 +110,26 @@ A seção deve ser composta por estas propriedades:
 
 ``` jsonc
 {
-    "dataTypes": [ // Usado para definir tipagem dos campos
-        "number",
-        "string",
-        "boolean",
-        "Date"
-    ],
-    "propertiesPatterns": [ // A "Key" pode ser usada como pattern para informar o local onde a lista de campos deve ser gerada
-        {
-            "key": "ClasseProps", // Valor que será buscado e alterado no meio do seu template
-            "content": [
-                "  $CamelCase<({{PropName}})>$If<({{PropAllowNull}}|true|?|)>: {{PropType}}$If<({{PropDefaultValue}}||| = {{PropDefaultValue}})>;" // Conteúdo que será transformado e adicionado no local onde a key estiver
-            ]
-        }
-    ],
+    "propertiesList": {
+        "dataTypes": [ // Usado para definir tipagem dos campos
+            "number",
+            "string",
+            "boolean",
+            "Date"
+        ],
+        "patterns": [ // A "Key" pode ser usada como pattern para informar o local onde a lista de campos deve ser gerada
+            {
+                "key": "ClasseProps", // Valor que será buscado e alterado no meio do seu template
+                "props": {// Propriedades da propriedade
+                    "displayName": "Interface", // Nome que será mostrado ao usuário. Não obrigatório
+                    "description": "Inclui está propriedade na interface" // Descrição mais detalhada da propriedade. Não obrigatório.
+                },
+                "content": [
+                    "  $CamelCase<({{PropName}})>$If<({{PropAllowNull}}|true|?|)>: {{PropType}}$If<({{PropDefaultValue}}||| = {{PropDefaultValue}})>;" // Conteúdo que será transformado e adicionado no local onde a key estiver
+                ]
+            }
+        ]
+    }
 }
 ```
 

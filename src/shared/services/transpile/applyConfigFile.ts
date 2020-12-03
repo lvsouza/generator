@@ -7,10 +7,6 @@ import { IConfigFile, IPropertie } from '../../interfaces';
 import { transpileByPatterns } from './transpileService';
 
 export const applyConfigFile = (configs: IConfigFile & { properties: IPropertie[] }, templatePath: string): void => {
-  const transpilePatternsAndFunctions = (value: string): string => {
-    return transpileByPatterns(value, configs.patterns);
-  };
-
   configs.propertiesList.patterns.forEach(propPattern => {
     const content: string[] = [];
 
@@ -80,7 +76,7 @@ export const applyConfigFile = (configs: IConfigFile & { properties: IPropertie[
     if (!file.content) return;
 
     file.fullName = fileToMove.newName;
-    file.content = transpilePatternsAndFunctions(file.content);
+    file.content = transpileByPatterns(file.content, configs.patterns);
 
     try {
       writeFile(path.join(fileToMove.targetPathString, file.fullName), file);
@@ -104,7 +100,7 @@ export const applyConfigFile = (configs: IConfigFile & { properties: IPropertie[
 
     fileToChange.actions.forEach((action, actionIndex) => {
       try {
-        action.contentTranspiled = action.content?.map(content => transpilePatternsAndFunctions(content));
+        action.contentTranspiled = action.content?.map(content => transpileByPatterns(content, configs.patterns));
 
         const targetIndex = lines.findIndex(line => line.trim() === action.target);
         if (!action.contentTranspiled || !(targetIndex >= 0)) return;

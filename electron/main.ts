@@ -2,7 +2,7 @@ import { app, nativeImage, BrowserWindow } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 
-let mainWindow: Electron.BrowserWindow | null;
+let mainWindow: BrowserWindow | null = null;
 
 const createWindow = () => {
   const icon = nativeImage.createFromPath(`${app.getAppPath()}/build/icon.png`);
@@ -48,6 +48,7 @@ const createWindow = () => {
 
   mainWindow.on('closed', () => {
     mainWindow = null;
+    app.quit();
   });
 };
 
@@ -56,4 +57,3 @@ app.on('ready', () => {
 });
 
 app.allowRendererProcessReuse = true;
-process.setMaxListeners(0);

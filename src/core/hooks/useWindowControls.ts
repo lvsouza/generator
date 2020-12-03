@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { remote, ProgressBarOptions } from 'electron';
 
@@ -18,17 +18,39 @@ export const useWindowControls = (): IWindowControls => {
   const window = useCallback(() => remote.getCurrentWindow(), []);
 
   const [isMaximized, setIsMaximized] = useState(window().isMaximized());
-  window().on('unmaximize', () => setIsMaximized(window().isMaximized()));
-  window().on('maximize', () => setIsMaximized(window().isMaximized()));
-  window().on('restore', () => setIsMaximized(window().isMaximized()));
+  useEffect(() => {
+    window().on('unmaximize', () => setIsMaximized(window().isMaximized()));
+    window().on('maximize', () => setIsMaximized(window().isMaximized()));
+    window().on('restore', () => setIsMaximized(window().isMaximized()));
+
+    return () => {
+      window().removeListener('unmaximize', () => setIsMaximized(window().isMaximized()));
+      window().removeListener('maximize', () => setIsMaximized(window().isMaximized()));
+      window().removeListener('restore', () => setIsMaximized(window().isMaximized()));
+    };
+  }, [window]);
 
   const [isFocused, setIsFocused] = useState(window().isFocused());
-  window().on('focus', () => setIsFocused(window().isFocused()));
-  window().on('blur', () => setIsFocused(window().isFocused()));
+  useEffect(() => {
+    window().on('focus', () => setIsFocused(window().isFocused()));
+    window().on('blur', () => setIsFocused(window().isFocused()));
+
+    return () => {
+      window().removeListener('focus', () => setIsFocused(window().isFocused()));
+      window().removeListener('blur', () => setIsFocused(window().isFocused()));
+    };
+  }, [window]);
 
   const [isMinimized, setIsMinimized] = useState(window().isMinimized());
-  window().on('minimize', () => setIsMinimized(window().isMinimized()));
-  window().on('restore', () => setIsMinimized(window().isMinimized()));
+  useEffect(() => {
+    window().on('minimize', () => setIsMinimized(window().isMinimized()));
+    window().on('restore', () => setIsMinimized(window().isMinimized()));
+
+    return () => {
+      window().removeListener('minimize', () => setIsMinimized(window().isMinimized()));
+      window().removeListener('restore', () => setIsMinimized(window().isMinimized()));
+    };
+  }, [window]);
 
   const toggleMaximize = useCallback(() => {
     if (window().isMaximized()) {

@@ -268,8 +268,10 @@ export const HomePage: React.FC = () => {
                 <div className="flex-column margin-top-m overflow-auto" style={{ maxHeight: '35vh' }}>
                   <table cellSpacing={0}>
                     <thead>
-                      <th>Name</th>
-                      <th>Value</th>
+                      <tr>
+                        <th>Name</th>
+                        <th>Value</th>
+                      </tr>
                     </thead>
                     <tbody>
                       {patterns.map((pattern, index) => (
@@ -286,18 +288,20 @@ export const HomePage: React.FC = () => {
                 <div className="overflow-auto padding-s" style={{ minHeight: '30vh', maxHeight: '50vh', maxWidth: '90vw' }}>
                   <table cellSpacing={0}>
                     <thead>
-                      <th />
-                      <th>Name</th>
-                      <th>Type</th>
-                      <th>Allow null</th>
-                      <th>Max width</th>
-                      <th>Min width</th>
-                      <th>Default value</th>
-                      {propertiesPatterns.propertiesList.patterns.map((pattern, index) => (
-                        <th key={index} title={pattern.props?.description}>
-                          {pattern.props?.displayName || pattern.key}
-                        </th>
-                      ))}
+                      <tr>
+                        <th />
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Allow null</th>
+                        <th>Min width</th>
+                        <th>Max width</th>
+                        <th>Default value</th>
+                        {propertiesPatterns.propertiesList.patterns.map((pattern, index) => (
+                          <th key={index} title={pattern.props?.description}>
+                            {pattern.props?.displayName || pattern.key}
+                          </th>
+                        ))}
+                      </tr>
                     </thead>
                     <tbody>
                       {propertiesPatterns.properties.map((prop, index, array) => (

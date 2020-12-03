@@ -9,7 +9,7 @@ export const PatternCellProp: React.FC<IPatternCellPropProps> = ({ pattern }) =>
 
   return (
     <td align="center" className="border-default pointer focus" tabIndex={0} onClick={() => setValue(!value)} onKeyPress={() => setValue(!value)}>
-      <input type="checkbox" className="padding-xs" tabIndex={-1} checked={Boolean(value)} />
+      <input type="checkbox" className="padding-xs" tabIndex={-1} checked={Boolean(value)} onChange={() => setValue(!value)} />
     </td>
   );
 };

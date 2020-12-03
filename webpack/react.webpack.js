@@ -45,7 +45,7 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: path.resolve(rootPath, 'index.html')
+      template: path.resolve(rootPath, 'electron', 'index.html')
     }),
     isDevelopment && new ReactRefreshWebpackPlugin(),
   ].filter(Boolean),

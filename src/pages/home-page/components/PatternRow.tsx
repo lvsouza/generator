@@ -13,8 +13,8 @@ interface IPatternInputProps {
 }
 export const PatternRow: React.FC<IPatternInputProps> = ({ propertiesList, propertie, onDelete }) => {
   const [defaultValue, setDefaultValue] = useObserver(propertie.defaultValue);
-  const [minLength, setMaxLength] = useObserver(propertie.minLength);
-  const [maxLength, setMinLength] = useObserver(propertie.maxLength);
+  const [minLength, setMinLength] = useObserver(propertie.minLength);
+  const [maxLength, setMaxLength] = useObserver(propertie.maxLength);
   const [allowNull, setAllowNull] = useObserver(propertie.allowNull);
   const dataTypes = useObserverValue(ProjectLocationStore.dataTypes);
   const [type, setType] = useObserver(propertie.type);
@@ -35,13 +35,13 @@ export const PatternRow: React.FC<IPatternInputProps> = ({ propertiesList, prope
         </select>
       </td>
       <td align="center" className=" pointer" tabIndex={0} onClick={() => setAllowNull(!allowNull)} onKeyPress={() => setAllowNull(!allowNull)}>
-        <input type="checkbox" className="padding-xs pointer" tabIndex={-1} checked={allowNull} style={{ width: 100 }} />
+        <input type="checkbox" className="padding-xs pointer" tabIndex={-1} defaultChecked={allowNull} style={{ width: 100 }} />
       </td>
       <td>
-        <input type="number" className="padding-xs background-transparent" style={{ width: 100 }} min={0} value={minLength} onChange={e => setMaxLength(e.target.value === '' ? e.target.value : Number(e.target.value))} />
+        <input type="number" className="padding-xs background-transparent" style={{ width: 100 }} min={0} value={minLength} onChange={e => setMinLength(e.target.value === '' ? e.target.value : Number(e.target.value))} />
       </td>
       <td>
-        <input type="number" className="padding-xs background-transparent" style={{ width: 100 }} min={0} value={maxLength} onChange={e => setMinLength(e.target.value === '' ? e.target.value : Number(e.target.value))} />
+        <input type="number" className="padding-xs background-transparent" style={{ width: 100 }} min={0} value={maxLength} onChange={e => setMaxLength(e.target.value === '' ? e.target.value : Number(e.target.value))} />
       </td>
       <td>
         <input className="padding-xs background-transparent" value={defaultValue} onChange={e => setDefaultValue(e.target.value)} />

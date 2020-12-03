@@ -1,5 +1,6 @@
 import React from 'react';
 import { IObservable, useObserver } from 'react-observing';
+
 interface IPatternCellPropProps {
     pattern: IObservable<string | number | boolean>;
 }

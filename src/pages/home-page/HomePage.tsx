@@ -110,19 +110,25 @@ export const HomePage: React.FC = () => {
   const initPropertiesPatterns = useCallback(() => {
     const configFile = readJsonFile<IConfigFile>(path.join(templatesPath, selectedTemplate, 'config.json'));
 
-    const _propertiesPatterns = configFile.content?.propertiesPatterns;
-    if (_propertiesPatterns) {
+    const _propertiesList = configFile.content?.propertiesList;
+    if (_propertiesList) {
       setPropertiesPatterns({
-        patterns: _propertiesPatterns,
+        propertiesList: {
+          dataTypes: _propertiesList.dataTypes,
+          patterns: _propertiesList.patterns
+        },
         properties: []
       });
-    } else {
-      setPropertiesPatterns({ patterns: [], properties: [] });
-    }
 
-    const _dataTypes = configFile.content?.dataTypes;
-    if (_dataTypes) {
-      setDataTypes(_dataTypes);
+      setDataTypes(_propertiesList.dataTypes);
+    } else {
+      setPropertiesPatterns({
+        propertiesList: {
+          dataTypes: [],
+          patterns: []
+        },
+        properties: []
+      });
     }
   }, [selectedTemplate, templatesPath, setPropertiesPatterns, setDataTypes]);
 
@@ -171,11 +177,10 @@ export const HomePage: React.FC = () => {
   const handleWriteChanges = useCallback(() => {
     try {
       applyConfigFile({
-        propertiesPatterns: propertiesPatterns.patterns,
+        propertiesList: propertiesPatterns.propertiesList,
         properties: propertiesPatterns.properties,
         filesToChange,
         filesToMove,
-        dataTypes,
         patterns: [
           ...patterns,
           {
@@ -189,7 +194,7 @@ export const HomePage: React.FC = () => {
     } catch (e) {
       alert(e.message);
     }
-  }, [filesToChange, filesToMove, patterns, projectPath, selectedTemplate, templatesPath, dataTypes]);
+  }, [filesToChange, filesToMove, patterns, projectPath, selectedTemplate, templatesPath, dataTypes, propertiesPatterns]);
 
   const readTemplateByTemplatesPath = useCallback((path: string) => {
     try {
@@ -202,8 +207,7 @@ export const HomePage: React.FC = () => {
   return (
     <div className="flex1 flex-content-center flex-items-center">
       <div className="padding-m background-bars border-radius-soft flex-column" style={{ maxHeight: '90vh' }}>
-        <h2 className="text-align-center">Generator</h2>
-        <form className="flex-column margin-top-m" onSubmit={handleSubmit}>
+        <form className="flex-column" onSubmit={handleSubmit}>
           <Wizard
             step={currentStep}
             onClickPrevious={handlePrevius}
@@ -262,9 +266,17 @@ export const HomePage: React.FC = () => {
               <div className="flex-column">
                 <h3 className="text-align-center">Patterns to replace</h3>
                 <div className="flex-column margin-top-m overflow-auto" style={{ maxHeight: '35vh' }}>
-                  {patterns.map((pattern, index) => (
-                    <PatternInput key={index} id={index} patternProps={pattern.props} value={pattern.value || observe('')} />
-                  ))}
+                  <table cellSpacing={0}>
+                    <thead>
+                      <th>Name</th>
+                      <th>Value</th>
+                    </thead>
+                    <tbody>
+                      {patterns.map((pattern, index) => (
+                        <PatternInput key={index} id={index} patternProps={pattern.props} value={pattern.value || observe('')} />
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </WizardItem>
@@ -273,17 +285,17 @@ export const HomePage: React.FC = () => {
                 <p className="text-align-center margin-bottom-s">Create or custumize your fields</p>
                 <div className="overflow-auto padding-s" style={{ minHeight: '30vh', maxHeight: '50vh', maxWidth: '90vw' }}>
                   <table cellSpacing={0}>
-                    <thead className="background-panels">
-                      <th className="padding-xs border-default word-break-no" />
-                      <th className="padding-xs border-default word-break-no" align="center">Name</th>
-                      <th className="padding-xs border-default word-break-no" align="center">Type</th>
-                      <th className="padding-xs border-default word-break-no" align="center">Allow null</th>
-                      <th className="padding-xs border-default word-break-no" align="center">Max width</th>
-                      <th className="padding-xs border-default word-break-no" align="center">Min width</th>
-                      <th className="padding-xs border-default word-break-no" align="center">Default value</th>
-                      {propertiesPatterns.patterns.map((pattern, index) => (
-                        <th key={index} className="padding-xs border-default word-break-no" align="center">
-                          {pattern.key}
+                    <thead>
+                      <th />
+                      <th>Name</th>
+                      <th>Type</th>
+                      <th>Allow null</th>
+                      <th>Max width</th>
+                      <th>Min width</th>
+                      <th>Default value</th>
+                      {propertiesPatterns.propertiesList.patterns.map((pattern, index) => (
+                        <th key={index} title={pattern.props?.description}>
+                          {pattern.props?.displayName || pattern.key}
                         </th>
                       ))}
                     </thead>
@@ -292,7 +304,7 @@ export const HomePage: React.FC = () => {
                         <PatternRow
                           key={index}
                           propertie={prop}
-                          patterns={propertiesPatterns.patterns}
+                          propertiesList={propertiesPatterns.propertiesList}
                           onDelete={() => {
                             array.splice(index, 1);
                             setPropertiesPatterns({
@@ -320,7 +332,7 @@ export const HomePage: React.FC = () => {
                       type: observe('')
                     };
 
-                    propertiesPatterns.patterns.forEach(pattern => {
+                    propertiesPatterns.propertiesList.patterns.forEach(pattern => {
                       newItem[pattern.key] = observe(true);
                     });
 

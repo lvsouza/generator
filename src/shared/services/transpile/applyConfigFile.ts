@@ -11,7 +11,7 @@ export const applyConfigFile = (configs: IConfigFile & { properties: IPropertie[
     return transpileByPatterns(value, configs.patterns);
   };
 
-  configs.propertiesPatterns.forEach(propPattern => {
+  configs.propertiesList.patterns.forEach(propPattern => {
     const content: string[] = [];
 
     configs.properties.forEach(propertie => {

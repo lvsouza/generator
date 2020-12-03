@@ -10,8 +10,15 @@ export interface IPropertie {
     type: IObservable<string>;
 }
 
-export interface IPropertiesPattern {
-    contentString?: string;
-    content: string[];
-    key: string;
+export interface IPropertiesList {
+    dataTypes: string[];
+    patterns: {
+        contentString?: string;
+        content: string[];
+        key: string;
+        props: {
+            displayName?: string;
+            description?: string;
+        };
+    }[];
 }

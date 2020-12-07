@@ -65,7 +65,8 @@
     "semi": [
       "error",
       "always"
-    ]
+    ],
+    "curly": "off"
   },
   "settings": {
     "import/resolver": {

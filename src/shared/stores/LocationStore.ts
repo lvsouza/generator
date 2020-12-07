@@ -1,21 +1,17 @@
 import { observe } from 'react-observing';
 
-import { IPattern, IFileToMove, IFileToChange, IPropertiesList, IPropertie } from '../interfaces';
+import { IGenetatorStepsStore, ILine } from '../interfaces';
 import { configsStore } from '../../core/services';
 
-export const ProjectLocationStore = {
-  templatesPath: observe<string>(configsStore.get('templatePath')),
-  projectPath: observe<string>(configsStore.get('projectPath')),
-  filesToChange: observe<IFileToChange[]>([]),
-  filesToMove: observe<IFileToMove[]>([]),
-  patterns: observe<IPattern[]>([]),
-  dataTypes: observe<string[]>([]),
+export const ProjectLocationStore: IGenetatorStepsStore = {
+  templatesPath: observe(configsStore.get('templatePath')),
+  projectPath: observe(configsStore.get('projectPath')),
   selectedTemplate: observe(''),
-  propertiesPatterns: observe<{ propertiesList: IPropertiesList, properties: IPropertie[] }>({
-    properties: [],
-    propertiesList: {
-      dataTypes: [],
-      patterns: []
-    }
-  })
+  filesToChange: observe([]),
+  filesToMove: observe([]),
+  patterns: observe([]),
+  customFields: {
+    columns: observe([]),
+    lines: observe<ILine[]>([])
+  }
 };

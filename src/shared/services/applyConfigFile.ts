@@ -2,64 +2,42 @@ import { observe } from 'react-observing';
 
 import path from 'path';
 
-import { readFile, writeFile } from '../../../core/services';
-import { IConfigFile, IPropertie } from '../../interfaces';
-import { transpileByPatterns } from './transpileService';
+import { transpileByPatterns } from './transpile/transpileService';
+import { readFile, writeFile } from './../../core/services';
+import { ILine, IConfigFile } from './../interfaces';
 
-export const applyConfigFile = (configs: IConfigFile & { properties: IPropertie[] }, templatePath: string): void => {
-  configs.propertiesList.patterns.forEach(propPattern => {
+export const applyConfigFile = (configs: IConfigFile & { lines: ILine[] }, templatePath: string): void => {
+  configs.customFields.interableColumnPatterns.forEach(interableColumnPattern => {
     const content: string[] = [];
 
-    configs.properties.forEach(propertie => {
-      if (!propertie[propPattern.key].value) return;
+    configs.lines.forEach(line => {
+      if (!line[interableColumnPattern.key].value) return;
 
-      propPattern.contentString = '';
-      propPattern.content.forEach(contentLine => {
-        if (propPattern.contentString !== '') {
-          propPattern.contentString = propPattern.contentString + '\n';
-        }
-
-        propPattern.contentString = propPattern.contentString + transpileByPatterns(contentLine, [
-          ...configs.patterns,
-          {
-            key: 'PropType',
-            value: propertie.type,
-            props: { displayName: '' }
-          },
-          {
-            key: 'PropName',
-            value: propertie.name,
-            props: { displayName: '' }
-          },
-          {
-            key: 'PropMinLength',
-            value: propertie.minLength,
-            props: { displayName: '' }
-          },
-          {
-            key: 'PropMaxLength',
-            value: propertie.maxLength,
-            props: { displayName: '' }
-          },
-          {
-            key: 'PropDefaultValue',
-            value: propertie.defaultValue,
-            props: { displayName: '' }
-          },
-          {
-            key: 'PropAllowNull',
-            value: propertie.allowNull,
-            props: { displayName: '' }
+      interableColumnPattern.contentString = '';
+      interableColumnPattern.content.forEach(contentLine => {
+        if (contentLine === '') {
+          interableColumnPattern.contentString = interableColumnPattern.contentString + '\n';
+        } else {
+          if (interableColumnPattern.contentString && interableColumnPattern.contentString !== '' && interableColumnPattern.contentString !== '\n' && interableColumnPattern.contentString?.replace(/\n/g, '').length > 0) {
+            interableColumnPattern.contentString = interableColumnPattern.contentString + '\n';
           }
-        ]);
+
+          interableColumnPattern.contentString = interableColumnPattern.contentString + transpileByPatterns(contentLine, [
+            ...configs.patterns.filter(pattern => pattern.value?.value !== undefined).map(pattern => ({ key: pattern.key, value: pattern.value?.value || '' })),
+            ...configs.customFields.columnPatterns.map(column => ({
+              key: column.key,
+              value: line[column.key].value
+            }))
+          ]);
+        }
       });
 
-      content.push(propPattern.contentString);
+      content.push(interableColumnPattern.contentString);
     });
 
     configs.patterns.push({
-      key: propPattern.key,
       props: { displayName: '' },
+      key: interableColumnPattern.key,
       value: observe(content.join('\n'))
     });
   });
@@ -76,7 +54,7 @@ export const applyConfigFile = (configs: IConfigFile & { properties: IPropertie[
     if (!file.content) return;
 
     file.fullName = fileToMove.newName;
-    file.content = transpileByPatterns(file.content, configs.patterns);
+    file.content = transpileByPatterns(file.content, configs.patterns.map(pattern => ({ key: pattern.key, value: pattern.value?.value || '' })));
 
     try {
       writeFile(path.join(fileToMove.targetPathString, file.fullName), file);
@@ -100,7 +78,7 @@ export const applyConfigFile = (configs: IConfigFile & { properties: IPropertie[
 
     fileToChange.actions.forEach((action, actionIndex) => {
       try {
-        action.contentTranspiled = action.content?.map(content => transpileByPatterns(content, configs.patterns));
+        action.contentTranspiled = action.content?.map(content => transpileByPatterns(content, configs.patterns.map(pattern => ({ key: pattern.key, value: pattern.value?.value || '' }))));
 
         const targetIndex = lines.findIndex(line => line.trim() === action.target);
         if (!action.contentTranspiled || !(targetIndex >= 0)) return;

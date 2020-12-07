@@ -1,5 +1,4 @@
 import { toCamelCase, toKebabCase, toLowerCase, toUpperCase, toSnakeCase, toPascalCase, toFirstUpper, toFirstLower, ifFunction } from './functions';
-import { IPattern } from '../../interfaces';
 
 /**
  * Transform specific patterns in the middle of a string
@@ -60,8 +59,8 @@ const traspileFunctions = (valueToReplace: string): string => {
  * @param valueToReplace Value that will be analyzed and transformed
  * @param patterns Patterns
  */
-export const transpileByPatterns = (valueToReplace: string, patterns: IPattern[]): string => {
-  const keys = patterns.map(pattern => ({ key: pattern.key, value: pattern.value?.value || '' }));
+export const transpileByPatterns = (valueToReplace: string, patterns: { key: string, value: string | number | boolean | Date }[]): string => {
+  const keys = patterns.map(pattern => ({ key: pattern.key, value: pattern.value || '' }));
 
   keys.forEach(({ key, value }) => {
     if (value === undefined || value === null) value = '';

@@ -1,36 +1,35 @@
 import React, { useCallback, useState } from 'react';
 import { observe, useObserver } from 'react-observing';
-import { VscEllipsis } from 'react-icons/vsc';
+import { VscEllipsis, VscTrash } from 'react-icons/vsc';
 
 import { remote } from 'electron';
 import path from 'path';
 
 import { applyConfigFile, transpileByPatterns } from '../../shared/services';
 import { readFolder, readJsonFile, configsStore } from '../../core/services';
+import { PatternCellProp } from './components/PatternCellProp';
+import { IConfigFile, ILine } from '../../shared/interfaces';
 import { Wizard, WizardItem } from '../../shared/components';
 import { ProjectLocationStore } from '../../shared/stores';
 import { PatternInput } from './components/PatternInput';
-import { IConfigFile, IPropertie } from '../../shared/interfaces';
-import { PatternRow } from './components/PatternRow';
 
 export const HomePage: React.FC = () => {
-  const [propertiesPatterns, setPropertiesPatterns] = useObserver(ProjectLocationStore.propertiesPatterns);
   const [selectedTemplate, setSelectedTemplate] = useObserver(ProjectLocationStore.selectedTemplate);
   const [templatesPath, setTemplatesPath] = useObserver(ProjectLocationStore.templatesPath);
   const [filesToChange, setFilesToChange] = useObserver(ProjectLocationStore.filesToChange);
+  const [columns, setColumns] = useObserver(ProjectLocationStore.customFields.columns);
   const [projectPath, setProjectPath] = useObserver(ProjectLocationStore.projectPath);
   const [filesToMove, setFilesToMove] = useObserver(ProjectLocationStore.filesToMove);
-  const [dataTypes, setDataTypes] = useObserver(ProjectLocationStore.dataTypes);
+  const [lines, setLines] = useObserver(ProjectLocationStore.customFields.lines);
   const [patterns, setPatterns] = useObserver(ProjectLocationStore.patterns);
   const [currentStep, setCurrentStep] = useState(1);
 
   const transpilePatternsAndFunctions = useCallback((value: string): string => {
     return transpileByPatterns(value, [
-      ...patterns,
+      ...patterns.map(pattern => ({ key: pattern.key, value: pattern.value?.value || '' })),
       {
         key: 'ProjectPath',
-        value: observe(projectPath),
-        props: { displayName: 'Project path', description: '' }
+        value: projectPath
       }
     ]);
   }, [patterns, projectPath]);
@@ -107,30 +106,56 @@ export const HomePage: React.FC = () => {
     }
   }, [selectedTemplate, templatesPath, setFilesToChange, transpilePatternsAndFunctions]);
 
+  const handleAddNewLine = useCallback(() => {
+    const newLine: ILine = {};
+    setColumns(columns => {
+      columns.forEach(column => {
+        switch (column.props.type) {
+          case undefined:
+            newLine[column.key] = observe(true);
+            break;
+          case 'checkbox':
+            newLine[column.key] = observe(true);
+            break;
+          case 'number':
+            newLine[column.key] = observe(NaN);
+            break;
+          default:
+            newLine[column.key] = observe('');
+            break;
+        }
+      });
+
+      return columns;
+    });
+
+    setLines(lines => [
+      ...lines,
+      newLine
+    ]);
+  }, [setColumns, setLines]);
+
   const initPropertiesPatterns = useCallback(() => {
     const configFile = readJsonFile<IConfigFile>(path.join(templatesPath, selectedTemplate, 'config.json'));
 
-    const _propertiesList = configFile.content?.propertiesList;
-    if (_propertiesList) {
-      setPropertiesPatterns({
-        propertiesList: {
-          dataTypes: _propertiesList.dataTypes,
-          patterns: _propertiesList.patterns
-        },
-        properties: []
-      });
-
-      setDataTypes(_propertiesList.dataTypes);
+    const customFields = configFile.content?.customFields;
+    if (customFields?.columnPatterns && customFields?.interableColumnPatterns) {
+      setColumns([
+        ...customFields.columnPatterns,
+        ...customFields.interableColumnPatterns.map(interableColumn => ({
+          key: interableColumn.key,
+          props: {
+            type: undefined,
+            description: interableColumn.props.description,
+            displayName: interableColumn.props.displayName
+          }
+        }))
+      ]);
+      handleAddNewLine();
     } else {
-      setPropertiesPatterns({
-        propertiesList: {
-          dataTypes: [],
-          patterns: []
-        },
-        properties: []
-      });
+      setCurrentStep(currentStep + 1);
     }
-  }, [selectedTemplate, templatesPath, setPropertiesPatterns, setDataTypes]);
+  }, [templatesPath, selectedTemplate, currentStep, setColumns, handleAddNewLine]);
 
   const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -154,6 +179,7 @@ export const HomePage: React.FC = () => {
         break;
       case 4:
         setCurrentStep(5);
+        setLines([]);
         initPropertiesPatterns();
         break;
       case 5:
@@ -168,7 +194,7 @@ export const HomePage: React.FC = () => {
         setCurrentStep(8);
         break;
     };
-  }, [currentStep, projectPath, templatesPath, initPropertiesPatterns, initFilesToMove, initFilesToChange, initPatterns]);
+  }, [currentStep, projectPath, templatesPath, initPropertiesPatterns, initFilesToMove, initFilesToChange, initPatterns, setLines]);
 
   const handlePrevius = useCallback((step: number) => {
     setCurrentStep(step);
@@ -176,11 +202,21 @@ export const HomePage: React.FC = () => {
 
   const handleWriteChanges = useCallback(() => {
     try {
+      const configFile = readJsonFile<IConfigFile>(path.join(templatesPath, selectedTemplate, 'config.json'));
+
+      if (!configFile.content?.customFields) {
+        alert(`The key "configFile" was not found in file: ${path.join(templatesPath, selectedTemplate, 'config.json')}`);
+        return;
+      }
+
       applyConfigFile({
-        propertiesList: propertiesPatterns.propertiesList,
-        properties: propertiesPatterns.properties,
+        customFields: {
+          columnPatterns: configFile.content?.customFields.columnPatterns,
+          interableColumnPatterns: configFile.content?.customFields.interableColumnPatterns
+        },
         filesToChange,
         filesToMove,
+        lines,
         patterns: [
           ...patterns,
           {
@@ -194,7 +230,7 @@ export const HomePage: React.FC = () => {
     } catch (e) {
       alert(e.message);
     }
-  }, [filesToChange, filesToMove, patterns, projectPath, selectedTemplate, templatesPath, dataTypes, propertiesPatterns]);
+  }, [filesToChange, filesToMove, lines, patterns, projectPath, selectedTemplate, templatesPath]);
 
   const readTemplateByTemplatesPath = useCallback((path: string) => {
     try {
@@ -290,33 +326,36 @@ export const HomePage: React.FC = () => {
                     <thead>
                       <tr>
                         <th />
-                        <th>Name</th>
-                        <th>Type</th>
-                        <th>Allow null</th>
-                        <th>Min width</th>
-                        <th>Max width</th>
-                        <th>Default value</th>
-                        {propertiesPatterns.propertiesList.patterns.map((pattern, index) => (
-                          <th key={index} title={pattern.props?.description}>
-                            {pattern.props?.displayName || pattern.key}
+                        {columns.map((column, index) => (
+                          <th key={index} title={column.props?.description}>
+                            {column.props?.displayName || column.key}
                           </th>
                         ))}
                       </tr>
                     </thead>
                     <tbody>
-                      {propertiesPatterns.properties.map((prop, index, array) => (
-                        <PatternRow
-                          key={index}
-                          propertie={prop}
-                          propertiesList={propertiesPatterns.propertiesList}
-                          onDelete={() => {
-                            array.splice(index, 1);
-                            setPropertiesPatterns({
-                              ...propertiesPatterns,
-                              properties: array
-                            });
-                          }}
-                        />
+                      {lines.map((line, index, array) => (
+                        <tr key={index} className="fade-in">
+                          <td
+                            tabIndex={0}
+                            className="padding-xs pointer"
+                            onClick={() => {
+                              array.splice(index, 1);
+                              setLines([...array]);
+                            }}
+                          >
+                            <VscTrash />
+                          </td>
+                          {columns.map((column, indexColumn) => (
+                            <PatternCellProp
+                              type={column.props.type}
+                              pattern={line[column.key]}
+                              key={`${index}_${indexColumn}`}
+                              required={column.props.required}
+                              suggestions={column.props.suggestions}
+                            />
+                          ))}
+                        </tr>
                       ))}
                     </tbody>
                   </table>
@@ -324,30 +363,9 @@ export const HomePage: React.FC = () => {
                 <input
                   type="button"
                   value="New item"
-                  className="padding-xs margin-top-xs"
                   style={{ width: 100 }}
-                  onClick={() => {
-                    const newItem: IPropertie = {
-                      defaultValue: observe(''),
-                      allowNull: observe(false),
-                      minLength: observe(''),
-                      maxLength: observe(''),
-                      name: observe(''),
-                      type: observe('')
-                    };
-
-                    propertiesPatterns.propertiesList.patterns.forEach(pattern => {
-                      newItem[pattern.key] = observe(true);
-                    });
-
-                    setPropertiesPatterns({
-                      ...propertiesPatterns,
-                      properties: [
-                        ...propertiesPatterns.properties,
-                        newItem
-                      ]
-                    });
-                  }}
+                  onClick={handleAddNewLine}
+                  className="padding-xs margin-top-xs"
                 />
               </div>
             </WizardItem>

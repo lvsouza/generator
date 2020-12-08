@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { observe, useObserver } from 'react-observing';
-import { VscEllipsis, VscTrash } from 'react-icons/vsc';
+import { VscEllipsis, VscTrash, VscSaveAll } from 'react-icons/vsc';
 
 import { remote } from 'electron';
 import path from 'path';
@@ -9,7 +9,7 @@ import { applyConfigFile, transpileByPatterns } from '../../shared/services';
 import { readFolder, readJsonFile, configsStore } from '../../core/services';
 import { PatternCellProp } from './components/PatternCellProp';
 import { IConfigFile, ILine } from '../../shared/interfaces';
-import { Wizard, WizardItem } from '../../shared/components';
+import { Toolbar, Wizard, WizardItem } from '../../shared/components';
 import { ProjectLocationStore } from '../../shared/stores';
 import { PatternInput } from './components/PatternInput';
 
@@ -241,195 +241,200 @@ export const HomePage: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex1 flex-content-center flex-items-center">
-      <div className="padding-m background-bars border-radius-soft flex-column" style={{ maxHeight: '90vh' }}>
-        <form className="flex-column" onSubmit={handleSubmit}>
-          <Wizard
-            step={currentStep}
-            onClickPrevious={handlePrevius}
-            isNextVisible={currentStep !== 8}
-            buttonNextText={currentStep === 8 ? 'Finish' : undefined}
-          >
-            <WizardItem key={1}>
-              <label>
-                Projects path<br />
-                <input
-                  required
-                  value={projectPath}
-                  style={{ width: 258 }}
-                  placeholder="/www/projects/my-project"
-                  onChange={e => setProjectPath(e.target.value)}
-                />
-                <button
-                  onClick={handleSelectPath}
-                  className="border-default padding-horizontal-s border-radius-soft margin-left-s background-transparent text-white"
-                ><VscEllipsis /></button>
-              </label>
-            </WizardItem>
-            <WizardItem key={2}>
-              <label>
-                Template path<br />
-                <input
-                  required
-                  value={templatesPath}
-                  style={{ width: 258 }}
-                  placeholder="/www/projects/my-project/templates"
-                  onChange={e => setTemplatesPath(e.target.value)}
-                />
-                <button
-                  onClick={handleSelectPath}
-                  className="border-default padding-horizontal-s border-radius-soft margin-left-s background-transparent text-white"
-                ><VscEllipsis /></button>
-              </label>
-            </WizardItem>
-            <WizardItem key={3}>
-              <label>
-                Choose a template<br />
-                <select
-                  required
-                  style={{ width: 300 }}
-                  value={selectedTemplate}
-                  onChange={e => setSelectedTemplate(e.target.value)}
-                >
-                  <option value="">Select</option>
-                  {readTemplateByTemplatesPath(templatesPath).map((template, index) => (
-                    <option key={index} value={template.name}>{template.name}</option>
-                  ))}
-                </select>
-              </label>
-            </WizardItem>
-            <WizardItem key={4}>
-              <div className="flex-column">
-                <h3 className="text-align-center">Patterns to replace</h3>
-                <div className="flex-column margin-top-m overflow-auto" style={{ maxHeight: '35vh' }}>
-                  <table cellSpacing={0}>
-                    <thead>
-                      <tr>
-                        <th>Name</th>
-                        <th>Value</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {patterns.map((pattern, index) => (
-                        <PatternInput key={index} id={index} patternProps={pattern.props} value={pattern.value || observe('')} />
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </WizardItem>
-            <WizardItem key={5}>
-              <div className="flex-column">
-                <p className="text-align-center margin-bottom-s">Create or custumize your fields</p>
-                <div className="overflow-auto padding-s" style={{ minHeight: '30vh', maxHeight: '50vh', maxWidth: '90vw' }}>
-                  <table cellSpacing={0}>
-                    <thead>
-                      <tr>
-                        <th />
-                        {columns.map((column, index) => (
-                          <th key={index} title={column.props?.description}>
-                            {column.props?.displayName || column.key}
-                          </th>
+    <>
+      <Toolbar />
+      <div className="flex1 flex-content-center flex-items-center">
+        <div className="padding-m background-bars border-radius-soft flex-column" style={{ maxHeight: '90vh' }}>
+          <form className="flex-column" onSubmit={handleSubmit}>
+            <Wizard
+              step={currentStep}
+              onClickPrevious={handlePrevius}
+              isNextVisible={currentStep !== 8}
+              buttonNextText={currentStep === 8 ? 'Finish' : undefined}
+            >
+              <WizardItem key={1}>
+                <label>
+                  Projects path<br />
+                  <input
+                    required
+                    value={projectPath}
+                    style={{ width: 258 }}
+                    placeholder="/www/projects/my-project"
+                    onChange={e => setProjectPath(e.target.value)}
+                  />
+                  <button
+                    onClick={handleSelectPath}
+                    className="border-default padding-horizontal-s border-radius-soft margin-left-s background-transparent text-white"
+                  ><VscEllipsis /></button>
+                </label>
+              </WizardItem>
+              <WizardItem key={2}>
+                <label>
+                  Template path<br />
+                  <input
+                    required
+                    value={templatesPath}
+                    style={{ width: 258 }}
+                    placeholder="/www/projects/my-project/templates"
+                    onChange={e => setTemplatesPath(e.target.value)}
+                  />
+                  <button
+                    onClick={handleSelectPath}
+                    className="border-default padding-horizontal-s border-radius-soft margin-left-s background-transparent text-white"
+                  ><VscEllipsis /></button>
+                </label>
+              </WizardItem>
+              <WizardItem key={3}>
+                <label>
+                  Choose a template<br />
+                  <select
+                    required
+                    style={{ width: 300 }}
+                    value={selectedTemplate}
+                    onChange={e => setSelectedTemplate(e.target.value)}
+                  >
+                    <option value="">Select</option>
+                    {readTemplateByTemplatesPath(templatesPath).map((template, index) => (
+                      <option key={index} value={template.name}>{template.name}</option>
+                    ))}
+                  </select>
+                </label>
+              </WizardItem>
+              <WizardItem key={4}>
+                <div className="flex-column">
+                  <h3 className="text-align-center">Patterns to replace</h3>
+                  <div className="flex-column margin-top-m overflow-auto" style={{ maxHeight: '35vh' }}>
+                    <table cellSpacing={0}>
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Value</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {patterns.map((pattern, index) => (
+                          <PatternInput key={index} id={index} patternProps={pattern.props} value={pattern.value || observe('')} />
                         ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {lines.map((line, index, array) => (
-                        <tr key={index} className="fade-in">
-                          <td
-                            tabIndex={0}
-                            className="padding-xs pointer"
-                            onClick={() => {
-                              array.splice(index, 1);
-                              setLines([...array]);
-                            }}
-                          >
-                            <VscTrash />
-                          </td>
-                          {columns.map((column, indexColumn) => (
-                            <PatternCellProp
-                              type={column.props.type}
-                              pattern={line[column.key]}
-                              key={`${index}_${indexColumn}`}
-                              required={column.props.required}
-                              suggestions={column.props.suggestions}
-                            />
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </WizardItem>
+              <WizardItem key={5}>
+                <div className="flex-column">
+                  <p className="text-align-center margin-bottom-s">Create or custumize your fields</p>
+                  <div className="overflow-auto padding-s" style={{ minHeight: '30vh', maxHeight: '50vh', maxWidth: '90vw' }}>
+                    <table cellSpacing={0}>
+                      <thead>
+                        <tr>
+                          <th />
+                          {columns.map((column, index) => (
+                            <th key={index} title={column.props?.description}>
+                              {column.props?.displayName || column.key}
+                            </th>
                           ))}
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <input
-                  type="button"
-                  value="New item"
-                  style={{ width: 100 }}
-                  onClick={handleAddNewLine}
-                  className="padding-xs margin-top-xs"
-                />
-              </div>
-            </WizardItem>
-            <WizardItem key={6}>
-              <div className="flex-column">
-                <h3 className="text-align-center padding-s text-align-center">Files to move</h3>
-                {filesToMove.map((file, index) => (
-                  <div key={index} className="flex-column padding-s border-default border-radius-soft margin-top-xs">
-                    <p className="font-weight-s">
-                      <b className="font-weight-g margin-right-xs">Name:</b>
-                      <i>{file.originalName}</i>
-                    </p>
-                    <p className="font-weight-s">
-                      <b className="font-weight-g margin-right-xs">
-                        New name:
-                      </b>
-                      {file.newName}
-                    </p>
-                    <p className="font-weight-s">
-                      <b className="font-weight-g margin-right-xs">
-                        Target path:
-                      </b>
-                      {file.targetPathString}
-                    </p>
-                  </div>
-                ))}
-                {filesToMove.length === 0 && <p className="text-color text-align-center"><i>No files to move</i></p>}
-              </div>
-            </WizardItem>
-            <WizardItem key={7}>
-              <div className="flex-column">
-                <h3 className="text-align-center padding-s text-align-center">Files to change</h3>
-                {filesToChange.map((file, index) => (
-                  <div key={index} className="flex-column padding-s border-default border-radius-soft margin-top-xs">
-                    <p className="font-weight-s">
-                      <b className="font-weight-g margin-right-xs">Name:</b>
-                      <i>{file.name}</i>
-                    </p>
-                    <div className="font-weight-s">
-                      <b className="font-weight-g margin-right-xs">Path:</b>
-                      <i>{file.pathString}</i>
-                    </div>
-                    <div className="font-weight-s text-color flex-column">
-                      <p className="margin-top-s margin-bottom-xs">{file.description}</p>
-                      <div className="font-size-s flex-column">
-                        {file.actions.map((action, index) => (
-                          <p key={index}>{action.description}</p>
+                      </thead>
+                      <tbody>
+                        {lines.map((line, index, array) => (
+                          <tr key={index} className="fade-in">
+                            <td
+                              tabIndex={0}
+                              className="padding-xs pointer"
+                              onClick={() => {
+                                array.splice(index, 1);
+                                setLines([...array]);
+                              }}
+                            >
+                              <VscTrash />
+                            </td>
+                            {columns.map((column, indexColumn) => (
+                              <PatternCellProp
+                                type={column.props.type}
+                                pattern={line[column.key]}
+                                key={`${index}_${indexColumn}`}
+                                required={column.props.required}
+                                suggestions={column.props.suggestions}
+                              />
+                            ))}
+                          </tr>
                         ))}
+                      </tbody>
+                    </table>
+                  </div>
+                  <input
+                    type="button"
+                    value="New item"
+                    style={{ width: 100 }}
+                    onClick={handleAddNewLine}
+                    className="padding-xs margin-top-xs"
+                  />
+                </div>
+              </WizardItem>
+              <WizardItem key={6}>
+                <div className="flex-column">
+                  <h3 className="text-align-center padding-s text-align-center">Files to move</h3>
+                  {filesToMove.map((file, index) => (
+                    <div key={index} className="flex-column padding-s border-default border-radius-soft margin-top-xs">
+                      <p className="font-weight-s">
+                        <b className="font-weight-g margin-right-xs">Name:</b>
+                        <i>{file.originalName}</i>
+                      </p>
+                      <p className="font-weight-s">
+                        <b className="font-weight-g margin-right-xs">
+                          New name:
+                        </b>
+                        {file.newName}
+                      </p>
+                      <p className="font-weight-s">
+                        <b className="font-weight-g margin-right-xs">
+                          Target path:
+                        </b>
+                        {file.targetPathString}
+                      </p>
+                    </div>
+                  ))}
+                  {filesToMove.length === 0 && <p className="text-color text-align-center"><i>No files to move</i></p>}
+                </div>
+              </WizardItem>
+              <WizardItem key={7}>
+                <div className="flex-column">
+                  <h3 className="text-align-center padding-s text-align-center">Files to change</h3>
+                  {filesToChange.map((file, index) => (
+                    <div key={index} className="flex-column padding-s border-default border-radius-soft margin-top-xs">
+                      <p className="font-weight-s">
+                        <b className="font-weight-g margin-right-xs">Name:</b>
+                        <i>{file.name}</i>
+                      </p>
+                      <div className="font-weight-s">
+                        <b className="font-weight-g margin-right-xs">Path:</b>
+                        <i>{file.pathString}</i>
+                      </div>
+                      <div className="font-weight-s text-color flex-column">
+                        <p className="margin-top-s margin-bottom-xs">{file.description}</p>
+                        <div className="font-size-s flex-column">
+                          {file.actions.map((action, index) => (
+                            <p key={index}>{action.description}</p>
+                          ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-                {filesToChange.length === 0 && <p className="text-color text-align-center"><i>No files to change</i></p>}
-              </div>
-            </WizardItem>
-            <WizardItem key={8}>
-              <div className="flex-column flex-content-center flex1" style={{ minWidth: 200, minHeight: 100 }}>
-                <button onClick={handleWriteChanges} className="padding-s background-primary border-none border-radius-soft text-white shadow-l">Write changes</button>
-                <button onClick={() => setCurrentStep(1)} className="padding-s margin-top-m background-transparent border-radius-soft text-white border-default">Reset</button>
-              </div>
-            </WizardItem>
-          </Wizard>
-        </form>
+                  ))}
+                  {filesToChange.length === 0 && <p className="text-color text-align-center"><i>No files to change</i></p>}
+                </div>
+              </WizardItem>
+              <WizardItem key={8}>
+                <div className="flex-column flex-content-center flex1" style={{ minWidth: 200, minHeight: 100 }}>
+                  <button onClick={handleWriteChanges} className="padding-s background-primary border-none border-radius-soft text-white shadow-l display-flex flex-items-center flex-content-center">
+                    <VscSaveAll size={20} className="margin-s" />
+                    Write changes
+                  </button>
+                </div>
+              </WizardItem>
+            </Wizard>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 };

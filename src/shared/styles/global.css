@@ -13,68 +13,68 @@
 @import './fonts.css';
 @import './hrs.css';
 :root {
-    /*
+  /*
         Font default 16px
         16 * 0.6 = 9.6px
 
         1rem = 9.6px
     */
-    font-size: 50%;
-    /* *** */
-    --size-none: 0rem;
-    --size-xxs: 0.1rem;
-    --size-xs: 0.5rem;
-    --size-s: 1rem;
-    --size-sm: 1.4rem;
-    --size-m: 1.8rem;
-    --size-g: 2.2rem;
-    --size-xg: 3rem;
-    --size-fill: 100%;
+  font-size: 50%;
+  /* *** */
+  --size-none: 0rem;
+  --size-xxs: 0.1rem;
+  --size-xs: 0.5rem;
+  --size-s: 1rem;
+  --size-sm: 1.4rem;
+  --size-m: 1.8rem;
+  --size-g: 2.2rem;
+  --size-xg: 3rem;
+  --size-fill: 100%;
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    outline: none;
-    user-select: none;
-    -ms-user-select: none;
-    box-sizing: border-box;
-    -webkit-user-select: none;
-    -moz-user-select: -moz-none;
-    font-weight: var(--font-weight-m);
-    font-family: var(--font-family-default);
+  margin: 0;
+  padding: 0;
+  outline: none;
+  user-select: none;
+  -ms-user-select: none;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: -moz-none;
+  font-weight: var(--font-weight-m);
+  font-family: var(--font-family-default);
 }
 
 html, body, #root {
-    background-color: var(--color-background);
-    color: var(--text-color);
-    overflow: hidden;
-    display: flex;
-    height: 100vh;
-    width: 100vw;
+  background-color: var(--color-background);
+  color: var(--text-color);
+  overflow: hidden;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
 }
 
 body, input, button, textarea {
-    font: var(--font-weight-m) var(--font-size-g) var(--font-family-default);
+  font: var(--font-weight-m) var(--font-size-g) var(--font-family-default);
 }
 
 input, textarea, select {
-    background-color: var(--color-background-bars);
-    border-radius: var(--size-xs);
-    border: var(--input-border);
-    padding: var(--padding-s);
-    padding-right: var(--padding-xs);
-    padding-left: var(--padding-xs);
-    color: var(--text-color);
+  background-color: var(--color-background-bars);
+  border-radius: var(--size-xs);
+  border: var(--input-border);
+  padding: var(--padding-s);
+  padding-right: var(--padding-xs);
+  padding-left: var(--padding-xs);
+  color: var(--text-color);
 }
 
 input:disabled, textarea:disabled, select:disabled, button:disabled {
-    opacity: 0.7;
+  opacity: 0.7;
 }
 
 input:focus, textarea:focus, select:focus, input[type="button"]:focus, button:focus {
-    background-color: var(--color-background-highlighted);
-    outline: var(--outline-none);
+  background-color: var(--color-background-highlighted);
+  outline: var(--outline-none);
 }
 
 /* Remove os botões da input de texto */
@@ -82,115 +82,117 @@ input:focus, textarea:focus, select:focus, input[type="button"]:focus, button:fo
 /* Chrome, Safari, Edge, Opera */
 
 input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
 /* Firefox */
 
 input[type="number"] {
-    -moz-appearance: textfield;
+  -moz-appearance: textfield;
 }
 
 div, nav, form {
-    display: flex;
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    background-color: transparent;
+  display: flex;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  background-color: transparent;
 }
 
 label, button, input[type="button"], input[type="submit"] {
-    cursor: pointer;
+  background-color: transparent;
+  cursor: pointer;
+  border: none;
 }
 
 input[type="button"]:hover, input[type="submit"]:hover, button:hover:not(:disabled):not([class*="hover"]) {
-    background-color: var(--color-background-highlighted);
+  background-color: var(--color-background-highlighted);
 }
 
 input[type="button"]:active, button:active {
-    box-shadow: inset 0 0 0px 1px black;
+  box-shadow: inset 0 0 0px 1px black;
 }
 
 thead {
-    background-color: var(--color-background-panels);
+  background-color: var(--color-background-panels);
 }
 
 thead th {
-    border: var(--input-border);
-    padding: var(--size-xs);
-    word-break: keep-all;
-    white-space: nowrap;
+  border: var(--input-border);
+  padding: var(--size-xs);
+  word-break: keep-all;
+  white-space: nowrap;
 }
 
 tbody tr td {
-    border: var(--input-border);
-    word-break: keep-all;
-    white-space: nowrap;
+  border: var(--input-border);
+  word-break: keep-all;
+  white-space: nowrap;
 }
 
 tbody tr:hover, tbody tr td:focus {
-    background-color: var(--color-background-bars);
-    filter: contrast(0.9);
+  background-color: var(--color-background-bars);
+  filter: contrast(0.9);
 }
 
-tbody tr td > input, tbody tr td > select {
-    border: none;
+tbody tr td>input, tbody tr td>select {
+  border: none;
 }
 
 .full-width {
-    width: var(--size-fill);
+  width: var(--size-fill);
 }
 
 .full-height {
-    height: var(--size-fill);
+  height: var(--size-fill);
 }
 
 .text-ellipsis {
-    text-overflow: ellipsis;
-    display: inline-block;
-    white-space: nowrap;
-    text-align: start;
-    overflow: hidden;
+  text-overflow: ellipsis;
+  display: inline-block;
+  white-space: nowrap;
+  text-align: start;
+  overflow: hidden;
 }
 
 .overflow-auto {
-    overflow: auto;
+  overflow: auto;
 }
 
 .pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 ::-webkit-scrollbar {
-    width: var(--size-xs);
-    height: var(--size-xs);
+  width: var(--size-xs);
+  height: var(--size-xs);
 }
 
 ::-webkit-scrollbar-corner {
-    background-color: var(--color-transparent);
+  background-color: var(--color-transparent);
 }
 
 ::-webkit-scrollbar:horizontal {
-    height: var(--size-scroll-bar-horizontal);
+  height: var(--size-scroll-bar-horizontal);
 }
 
 ::-webkit-scrollbar-button {
-    display: none;
+  display: none;
 }
 
 ::-webkit-scrollbar-track {
-    background-color: var(--color-transparent);
+  background-color: var(--color-transparent);
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: var(--color-background-highlighted);
-    border-radius: var(--size-xs);
+  background-color: var(--color-background-highlighted);
+  border-radius: var(--size-xs);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: var(--color-background);
+  background-color: var(--color-background);
 }
 
 ::-webkit-scrollbar-thumb:active {
-    background-color: var(--color-background-panels);
+  background-color: var(--color-background-panels);
 }

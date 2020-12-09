@@ -1,4 +1,5 @@
 export * from './files/reader/ReadJsonFile';
+export * from './progress-bar/ProgressBar';
 export * from './files/reader/ReadFolder';
 export * from './files/reader/ReadFiles';
 export * from './files/writer/WriteFile';

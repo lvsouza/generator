@@ -133,16 +133,16 @@
       "target": [
         "AppImage"
       ],
+      "icon": "/build/icon.png",
       "category": "Development"
     },
     "win": {
       "target": [
-        "portable"
+        "portable",
+        "msi"
       ]
     },
-    "portable": {
-      "artifactName": "generator.exe"
-    },
+    "portable": {},
     "directories": {
       "buildResources": "build",
       "output": "release"

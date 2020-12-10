@@ -50,6 +50,18 @@ export const GeneratorPage: React.FC = () => {
     }
   }, [currentStep, setProjectPath, setTemplatesPath]);
 
+  const handleInitFinsTemplatesPath = useCallback(() => {
+    if (projectPath) {
+      configsStore.set('projectPath', projectPath);
+    }
+  }, [projectPath]);
+
+  const handleInitChooseTemplates = useCallback(() => {
+    if (templatesPath) {
+      configsStore.set('templatePath', templatesPath);
+    }
+  }, [templatesPath]);
+
   const initPatterns = useCallback(() => {
     const configFile = readJsonFile<IConfigFile>(path.join(templatesPath, selectedTemplate, 'config.json'));
     const patterns = configFile.content?.patterns;
@@ -137,8 +149,8 @@ export const GeneratorPage: React.FC = () => {
 
   const initPropertiesPatterns = useCallback(() => {
     const configFile = readJsonFile<IConfigFile>(path.join(templatesPath, selectedTemplate, 'config.json'));
-
     const customFields = configFile.content?.customFields;
+
     if (customFields?.columnPatterns && customFields?.interableColumnPatterns) {
       setColumns([
         ...customFields.columnPatterns,
@@ -151,11 +163,16 @@ export const GeneratorPage: React.FC = () => {
           }
         }))
       ]);
-      handleAddNewLine();
+
+      if (lines.length === 0) {
+        handleAddNewLine();
+      }
     } else {
-      setCurrentStep(currentStep + 1);
+      setColumns([]);
+      setCurrentStep(currentStep => ++currentStep);
+      initFilesToMove();
     }
-  }, [templatesPath, selectedTemplate, currentStep, setColumns, handleAddNewLine]);
+  }, [templatesPath, selectedTemplate, setColumns, handleAddNewLine, setCurrentStep]);
 
   const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -163,32 +180,22 @@ export const GeneratorPage: React.FC = () => {
     switch (currentStep) {
       case 1:
         setCurrentStep(2);
-        if (projectPath) {
-          configsStore.set('projectPath', projectPath);
-        }
         break;
       case 2:
         setCurrentStep(3);
-        if (templatesPath) {
-          configsStore.set('templatePath', templatesPath);
-        }
         break;
       case 3:
         setCurrentStep(4);
-        initPatterns();
         break;
       case 4:
         setCurrentStep(5);
         setLines([]);
-        initPropertiesPatterns();
         break;
       case 5:
         setCurrentStep(6);
-        initFilesToMove();
         break;
       case 6:
         setCurrentStep(7);
-        initFilesToChange();
         break;
       case 7:
         setCurrentStep(8);
@@ -197,24 +204,23 @@ export const GeneratorPage: React.FC = () => {
   }, [currentStep, projectPath, templatesPath, initPropertiesPatterns, initFilesToMove, initFilesToChange, initPatterns, setLines]);
 
   const handlePrevius = useCallback((step: number) => {
-    setCurrentStep(step);
-  }, []);
+    if (step === 5 && columns.length === 0) {
+      setCurrentStep(--step);
+    } else {
+      setCurrentStep(step);
+    }
+  }, [columns]);
 
   const handleWriteChanges = useCallback(() => {
     try {
       const configFile = readJsonFile<IConfigFile>(path.join(templatesPath, selectedTemplate, 'config.json'));
 
-      if (!configFile.content?.customFields) {
-        alert(`The key "configFile" was not found in file: ${path.join(templatesPath, selectedTemplate, 'config.json')}`);
-        return;
-      }
-
       setProgressBar(0, { mode: 'indeterminate' });
 
       applyConfigFile({
         customFields: {
-          columnPatterns: configFile.content?.customFields.columnPatterns,
-          interableColumnPatterns: configFile.content?.customFields.interableColumnPatterns
+          columnPatterns: configFile.content?.customFields?.columnPatterns || [],
+          interableColumnPatterns: configFile.content?.customFields?.interableColumnPatterns || []
         },
         filesToChange,
         filesToMove,
@@ -232,6 +238,7 @@ export const GeneratorPage: React.FC = () => {
       setProgressBar(0, { mode: 'normal' });
       alert('All changes applied');
     } catch (e) {
+      setProgressBar(0, { mode: 'normal' });
       alert(e.message);
     }
   }, [filesToChange, filesToMove, lines, patterns, projectPath, selectedTemplate, templatesPath]);
@@ -271,7 +278,7 @@ export const GeneratorPage: React.FC = () => {
                 ><VscEllipsis /></button>
               </label>
             </WizardItem>
-            <WizardItem key={2}>
+            <WizardItem key={2} onInit={handleInitFinsTemplatesPath}>
               <label>
                 Template path<br />
                 <input
@@ -287,7 +294,7 @@ export const GeneratorPage: React.FC = () => {
                 ><VscEllipsis /></button>
               </label>
             </WizardItem>
-            <WizardItem key={3}>
+            <WizardItem key={3} onInit={handleInitChooseTemplates}>
               <label>
                 Choose a template<br />
                 <select
@@ -303,7 +310,7 @@ export const GeneratorPage: React.FC = () => {
                 </select>
               </label>
             </WizardItem>
-            <WizardItem key={4}>
+            <WizardItem key={4} onInit={initPatterns}>
               <div className="flex-column">
                 <h3 className="text-align-center">Patterns to replace</h3>
                 <div className="flex-column margin-top-m overflow-auto" style={{ maxHeight: '35vh' }}>
@@ -323,7 +330,7 @@ export const GeneratorPage: React.FC = () => {
                 </div>
               </div>
             </WizardItem>
-            <WizardItem key={5}>
+            <WizardItem key={5} onInit={initPropertiesPatterns}>
               <div className="flex-column">
                 <p className="text-align-center margin-bottom-s">Create or custumize your fields</p>
                 <div className="overflow-auto padding-s" style={{ minHeight: '30vh', maxHeight: '50vh', maxWidth: '90vw' }}>
@@ -370,11 +377,11 @@ export const GeneratorPage: React.FC = () => {
                   value="New item"
                   style={{ width: 100 }}
                   onClick={handleAddNewLine}
-                  className="padding-xs margin-top-xs"
+                  className="padding-xs margin-top-xs border-default"
                 />
               </div>
             </WizardItem>
-            <WizardItem key={6}>
+            <WizardItem key={6} onInit={initFilesToMove}>
               <div className="flex-column">
                 <h3 className="text-align-center padding-s text-align-center">Files to move</h3>
                 {filesToMove.map((file, index) => (
@@ -400,7 +407,7 @@ export const GeneratorPage: React.FC = () => {
                 {filesToMove.length === 0 && <p className="text-color text-align-center"><i>No files to move</i></p>}
               </div>
             </WizardItem>
-            <WizardItem key={7}>
+            <WizardItem key={7} onInit={initFilesToChange}>
               <div className="flex-column">
                 <h3 className="text-align-center padding-s text-align-center">Files to change</h3>
                 {filesToChange.map((file, index) => (

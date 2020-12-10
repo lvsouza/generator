@@ -1,3 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
-export const WizardItem: React.FC = ({ children }) => <>{children}</>;
+interface WizardItemProps {
+  onInit?(): void;
+}
+export const WizardItem: React.FC<WizardItemProps> = ({ children, onInit }) => {
+  useEffect(() => onInit && onInit(), []);
+  return <>{children}</>;
+};

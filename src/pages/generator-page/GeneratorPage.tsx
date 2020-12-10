@@ -265,6 +265,7 @@ export const GeneratorPage: React.FC = () => {
                   onChange={e => setProjectPath(e.target.value)}
                 />
                 <button
+                  autoFocus
                   onClick={handleSelectPath}
                   className="border-default padding-horizontal-s border-radius-soft margin-left-s background-transparent text-white"
                 ><VscEllipsis /></button>

@@ -10,14 +10,14 @@ export const Toolbar: React.FC = () => {
     <>
       <hr className="hr" />
       <div className="background-bars">
-        <button onClick={() => history.push('/home')} className={`padding-horizontal-s ${pathname === '/home' ? 'text-white' : 'text-color'}`}>
+        <button onClick={() => history.push('/home')} className={`padding-horizontal-s text-color${pathname === '/home' ? ' background' : ''}`}>
           <VscHome size={20} className="margin-s" />
         </button>
         <hr className="hr hr-vertical" />
-        <button onClick={() => history.push('/generator')} className={`padding-horizontal-s ${pathname === '/generator' ? 'text-white' : 'text-color'}`}>
+        <button onClick={() => history.push('/generator')} className={`padding-horizontal-s text-color${pathname === '/generator' ? ' background' : ''}`}>
           <VscGithubAction size={20} className="margin-s" />
         </button>
-        <button onClick={() => history.push('/criator')} className={`padding-horizontal-s ${pathname === '/criator' ? 'text-white' : 'text-color'}`}>
+        <button onClick={() => history.push('/criator')} className={`padding-horizontal-s text-color${pathname === '/criator' ? ' background' : ''}`}>
           <VscEdit size={20} className="margin-s" />
         </button>
       </div>

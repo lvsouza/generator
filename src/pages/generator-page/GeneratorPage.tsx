@@ -76,11 +76,11 @@ export const GeneratorPage: React.FC = () => {
 
   const initFilesToMove = useCallback(() => {
     const configFile = readJsonFile<IConfigFile>(path.join(templatesPath, selectedTemplate, 'config.json'));
-    const filesToMove = configFile.content?.filesToMove;
+    const _filesToMove = configFile.content?.filesToMove;
 
-    if (filesToMove) {
+    if (_filesToMove) {
       try {
-        setFilesToMove(filesToMove.map(file => ({
+        setFilesToMove(_filesToMove.map(file => ({
           ...file,
           newName: transpilePatternsAndFunctions(file.newName),
           targetPathString: transpilePatternsAndFunctions(path.join(...file.targetPath))
@@ -91,16 +91,17 @@ export const GeneratorPage: React.FC = () => {
       }
     } else {
       setFilesToMove([]);
+      setCurrentStep(oldStep => ++oldStep);
     }
   }, [selectedTemplate, templatesPath, setFilesToMove, transpilePatternsAndFunctions]);
 
   const initFilesToChange = useCallback(() => {
     const configFile = readJsonFile<IConfigFile>(path.join(templatesPath, selectedTemplate, 'config.json'));
-    const filesToChange = configFile.content?.filesToChange;
+    const _filesToChange = configFile.content?.filesToChange;
 
-    if (filesToChange) {
+    if (_filesToChange) {
       try {
-        setFilesToChange(filesToChange.map(file => ({
+        setFilesToChange(_filesToChange.map(file => ({
           ...file,
           pathString: transpilePatternsAndFunctions(path.join(...file.path)),
           description: transpilePatternsAndFunctions(file.description),
@@ -115,6 +116,7 @@ export const GeneratorPage: React.FC = () => {
       }
     } else {
       setFilesToChange([]);
+      setCurrentStep(oldStep => ++oldStep);
     }
   }, [selectedTemplate, templatesPath, setFilesToChange, transpilePatternsAndFunctions]);
 
@@ -205,11 +207,15 @@ export const GeneratorPage: React.FC = () => {
 
   const handlePrevius = useCallback((step: number) => {
     if (step === 5 && columns.length === 0) {
-      setCurrentStep(--step);
+      handlePrevius(--step);
+    } else if (step === 6 && filesToMove.length === 0) {
+      handlePrevius(--step);
+    } else if (step === 7 && filesToChange.length === 0) {
+      handlePrevius(--step);
     } else {
       setCurrentStep(step);
     }
-  }, [columns]);
+  }, [columns, filesToMove, filesToChange]);
 
   const handleWriteChanges = useCallback(() => {
     try {

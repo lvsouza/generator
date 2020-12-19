@@ -1,31 +1,35 @@
 :root {
-    --input-border: thin solid var(--color-background-highlighted);
+  --input-border: thin solid var(--color-background-highlighted);
 }
 
 .border-default {
-    border: var(--input-border);
+  border: var(--input-border);
 }
 
 .border-default-transparent {
-    border: thin solid transparent;
+  border: thin solid transparent;
 }
 
 .border-radius-none {
-    border-radius: var(--size-none);
+  border-radius: var(--size-none);
 }
 
 .border-radius {
-    border-radius: var(--size-xs);
+  border-radius: var(--size-xs);
 }
 
 .border-radius-soft {
-    border-radius: var(--size-xs);
+  border-radius: var(--size-xs);
+}
+
+.border-radius-rounded {
+  border-radius: 50%;
 }
 
 .input-border {
-    border: var(--input-border);
+  border: var(--input-border);
 }
 
 .border-none {
-    border: none;
+  border: none;
 }

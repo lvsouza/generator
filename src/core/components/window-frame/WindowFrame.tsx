@@ -10,7 +10,7 @@ export const WindowFrame: React.FC = ({ children }) => {
   return (
     <main className={`flex1 display-flex flex-column ${isFocused ? 'border-default' : 'border-default-transparent'}`}>
       {!isVisibleNativeFrame &&
-        <div className="frame-base background-bars">
+        <div className="frame-base background-bars z10">
           <div className="flex1 draggable-area flex-items-center">
             <label className="padding-horizontal-s">{title}</label>
           </div>

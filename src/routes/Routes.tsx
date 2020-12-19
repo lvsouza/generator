@@ -9,7 +9,8 @@ export const Routes: React.FC = () => {
       <Route path={'/home'} exact component={HomePage} />
 
       <Route path={'/generator'} exact component={GeneratorPage} />
-      <Route path={'/criator'} exact component={CriatorPage} />
+
+      <Route path={'/creator/:tab'} exact component={CriatorPage} />
 
       <Route path={'*'} exact component={() => <Redirect to="/home" />} />
     </Switch>

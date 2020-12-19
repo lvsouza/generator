@@ -12,7 +12,7 @@ export const HomePage: React.FC = () => {
       <hr className="hr margin-top-g margin-bottom-m" style={{ backgroundColor: 'var(--color-background-highlighted)' }} />
 
       <div>
-        <button onClick={() => history.push('/criator')} autoFocus className="margin-right-g padding-m text-white border-radius-soft border-default flex-items-center display-flex">
+        <button onClick={() => history.push('/creator/patterns')} autoFocus className="margin-right-g padding-m text-white border-radius-soft border-default flex-items-center display-flex">
           <VscEdit className="margin-s" size={20} />
           Creator
         </button>

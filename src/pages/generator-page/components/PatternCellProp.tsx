@@ -11,25 +11,40 @@ export const PatternCellProp: React.FC<IPatternCellPropProps> = ({ pattern, type
   const [value, setValue] = useObserver(pattern);
 
   if (!type || type === 'checkbox') return (
-    <td align="center" className="border-default pointer focus" tabIndex={0} onClick={() => setValue(!value)} onKeyPress={() => setValue(!value)}>
-      <input type="checkbox" required={required} className="padding-xs" tabIndex={-1} checked={Boolean(value)} onChange={() => setValue(!value)} />
+    <td align="center" className="pointer focus" tabIndex={0} onClick={() => setValue(!value)} onKeyPress={() => setValue(!value)}>
+      <input
+        tabIndex={-1}
+        type="checkbox"
+        required={required}
+        checked={Boolean(value)}
+        placeholder="Type here..."
+        onChange={() => setValue(!value)}
+      />
     </td>
   );
 
   if (type === 'select') return (
-    <td align="center" className="border-default pointer focus">
-      <select required={required} className="padding-xs background-transparent" value={value.toString()} style={{ width: 100 }} onChange={e => setValue(e.target.value)}>
+    <td align="center" className="pointer focus">
+      <select required={required} value={value.toString()} style={{ width: 100 }} onChange={e => setValue(e.target.value)}>
         <option value="">Select</option>
         {suggestions &&
-          suggestions.map((suggestion, index) => <option key={index} value={suggestion}>{suggestion}</option>)
+          suggestions.map((suggestion, index) => (
+            <option key={index} value={suggestion}>{suggestion}</option>
+          ))
         }
       </select>
     </td>
   );
 
   return (
-    <td align="center" className="border-default pointer focus">
-      <input type={type} className="padding-xs" required={required} value={value.toString()} onChange={e => setValue(e.target.value)} />
+    <td align="center" className="pointer focus">
+      <input
+        type={type}
+        required={required}
+        value={value.toString()}
+        placeholder="Type here..."
+        onChange={e => setValue(e.target.value)}
+      />
     </td>
   );
 };

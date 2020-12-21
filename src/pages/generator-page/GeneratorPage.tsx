@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import { observe, useObserver } from 'react-observing';
-import { VscEllipsis, VscTrash, VscSaveAll } from 'react-icons/vsc';
+import { VscEllipsis, VscTrash, VscSaveAll, VscAdd } from 'react-icons/vsc';
 
 import { remote } from 'electron';
 import path from 'path';
@@ -174,7 +174,7 @@ export const GeneratorPage: React.FC = () => {
       setCurrentStep(currentStep => ++currentStep);
       initFilesToMove();
     }
-  }, [templatesPath, selectedTemplate, setColumns, handleAddNewLine, setCurrentStep]);
+  }, [templatesPath, selectedTemplate, setColumns, lines.length, handleAddNewLine, initFilesToMove]);
 
   const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -203,7 +203,7 @@ export const GeneratorPage: React.FC = () => {
         setCurrentStep(8);
         break;
     };
-  }, [currentStep, projectPath, templatesPath, initPropertiesPatterns, initFilesToMove, initFilesToChange, initPatterns, setLines]);
+  }, [currentStep, setLines]);
 
   const handlePrevius = useCallback((step: number) => {
     if (step === 5 && columns.length === 0) {
@@ -338,14 +338,14 @@ export const GeneratorPage: React.FC = () => {
             </WizardItem>
             <WizardItem key={5} onInit={initPropertiesPatterns}>
               <div className="flex-column">
-                <p className="text-align-center margin-bottom-s">Create or custumize your fields</p>
-                <div className="overflow-auto padding-s" style={{ minHeight: '30vh', maxHeight: '50vh', maxWidth: '90vw' }}>
+                <p className="text-align-center margin-bottom-sm">Create or custumize fields</p>
+                <div className="overflow-auto padding-bottom-s" style={{ maxHeight: '50vh', maxWidth: '90vw' }}>
                   <table cellSpacing={0}>
                     <thead>
                       <tr>
                         <th />
                         {columns.map((column, index) => (
-                          <th key={index} title={column.props?.description}>
+                          <th key={index} title={column.props?.description} style={{ minWidth: 100 }}>
                             {column.props?.displayName || column.key}
                           </th>
                         ))}
@@ -375,16 +375,18 @@ export const GeneratorPage: React.FC = () => {
                           ))}
                         </tr>
                       ))}
+                      <tr>
+                        <td colSpan={columns.length + 1}>
+                          <button
+                            type="button"
+                            onClick={handleAddNewLine}
+                            className="display-flex flex-items-center full-width padding-s padding-horizontal-sm text-white"
+                          ><VscAdd className="margin-right-s" size={18} />Add</button>
+                        </td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
-                <input
-                  type="button"
-                  value="New item"
-                  style={{ width: 100 }}
-                  onClick={handleAddNewLine}
-                  className="padding-xs margin-top-xs border-default"
-                />
               </div>
             </WizardItem>
             <WizardItem key={6} onInit={initFilesToMove}>

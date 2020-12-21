@@ -1,6 +1,6 @@
 import React, { useCallback, Fragment, useState } from 'react';
-import { IObservable, observe, useObserver, set } from 'react-observing';
 import { VscAdd, VscClose, VscEdit, VscTrash } from 'react-icons/vsc';
+import { IObservable, observe, useObserver } from 'react-observing';
 
 import { Input, Select, TextArea } from '../../../observable-components';
 import { IFileToChangeActionCreator } from '../../../shared/interfaces';

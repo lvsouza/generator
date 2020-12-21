@@ -17,15 +17,16 @@ export const Toolbar: React.FC = () => {
     <>
       <hr className="hr" />
       <div>
+
         <button onClick={() => history.push('/home')} className={`padding-horizontal-s text-color${matchingPath('/home') ? '' : ' background-bars'}`}>
           <VscHome size={20} className="margin-s" />
         </button>
         <hr className="hr hr-vertical" />
-        <button onClick={() => history.push('/generator')} className={`padding-horizontal-s text-color${matchingPath('/generator') ? '' : ' background-bars'}`}>
-          <VscGithubAction size={20} className="margin-s" />
-        </button>
         <button onClick={() => history.push('/creator/patterns')} className={`padding-horizontal-s text-color${matchingPath('/creator/:step') ? '' : ' background-bars'}`}>
           <VscEdit size={20} className="margin-s" />
+        </button>
+        <button onClick={() => history.push('/generator')} className={`padding-horizontal-s text-color${matchingPath('/generator') ? '' : ' background-bars'}`}>
+          <VscGithubAction size={20} className="margin-s" />
         </button>
 
         <div className="background-bars flex1" />

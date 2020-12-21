@@ -8,7 +8,7 @@ interface HiddenProps<T> {
   observable: IObservable<T>;
   children: React.ReactNode;
 }
-export function Hidden<T>({ children, observable }: HiddenProps<T>): React.ReactNode {
+export function Hidden<T>({ children, observable }: HiddenProps<T>): React.ReactElement {
   const value = useObserverValue(observable);
-  return value ? null : <>{children}</>;
+  return value ? <></> : <>{children}</>;
 }

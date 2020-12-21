@@ -2,6 +2,11 @@ import * as fs from 'fs';
 
 import { IFileStructure } from './../IFileStructure';
 
+/**
+ * Write a file in a especific directory path
+ * @param basePath File path with their name and extension
+ * @param file File structure
+ */
 export const writeFile = (basePath: string, file: Omit<IFileStructure<string>, 'childs'>): void => {
   try {
     const folderPath = basePath.substring(basePath.indexOf(file.fullName) - 1, 0);

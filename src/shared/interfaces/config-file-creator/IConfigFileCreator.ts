@@ -11,4 +11,5 @@ export interface IConfigFileCreator {
   patterns: IObservable<IPatternCreator[]>;
   customFields: ICustomFieldsCreator;
   templateName: IObservable<string>;
+  toString(): string;
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { VscClose, VscTrash } from 'react-icons/vsc';
-import { IObservable, observe, set, useObserver } from 'react-observing';
+import { IObservable, set, useObserver } from 'react-observing';
 
 import { Input } from '../../../observable-components';
 

@@ -8,7 +8,7 @@ interface NotHiddenProps<T> {
   observable: IObservable<T>;
   children: React.ReactNode;
 }
-export function NotHidden<T>({ children, observable }: NotHiddenProps<T>): React.ReactNode {
+export function NotHidden<T>({ children, observable }: NotHiddenProps<T>): React.ReactElement {
   const value = useObserverValue(observable);
-  return value ? <>{children}</> : null;
+  return value ? <>{children}</> : <></>;
 }

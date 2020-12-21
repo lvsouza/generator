@@ -1,22 +1,47 @@
 import React, { useCallback, useRef } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { VscSave } from 'react-icons/vsc';
+
+import { remote } from 'electron';
+import path from 'path';
 
 import { ConfigFileCreatorStore } from '../../shared/stores';
 import { FilesToChange } from './components/FilesToChange';
 import { FilesToMove } from './components/FilesToMove';
 import { Input } from '../../observable-components';
 import { Patterns } from './components/Patterns';
+import { writeFile } from '../../core/services';
 
 export const CriatorPage: React.FC = () => {
   const ref = useRef<HTMLInputElement | null>(null);
   const { tab } = useParams<{ tab: string }>();
   const { push } = useHistory();
 
-  const handleSubmit = useCallback((e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log(ref.current);
-  }, [ref.current]);
+    try {
+      const [folderPath] = (await remote.dialog.showOpenDialog({ properties: ['openDirectory'] })).filePaths;
+      if (!folderPath) return;
+
+      const content = ConfigFileCreatorStore.toString();
+      if (content === '') return;
+
+      try {
+        writeFile(path.join(folderPath, ConfigFileCreatorStore.templateName.value, 'config.json'), {
+          path: path.join(folderPath, ConfigFileCreatorStore.templateName.value),
+          fullName: 'config.json',
+          name: 'config.json',
+          isDirectory: false,
+          content
+        });
+      } catch (e) {
+        alert(e.message);
+      }
+    } catch (e) {
+      alert('Unable to find the file path');
+    }
+  }, []);
 
   return (
     <form onSubmit={handleSubmit} autoComplete="off" className="flex1">
@@ -34,8 +59,11 @@ export const CriatorPage: React.FC = () => {
             />
           </label>
           <button
-            className="background-primary padding-horizontal-g border-radius text-white"
-          >Save</button>
+            className="background-primary padding-horizontal-g border-radius text-white display-flex flex-items-center"
+          >
+            <VscSave className="margin-right-s" />
+            Save
+          </button>
         </div>
 
         <div className="flex-column overflow-auto display-block full-width" style={{ height: 'calc(100vh - 20rem)' }}>
@@ -67,9 +95,7 @@ export const CriatorPage: React.FC = () => {
               <h3>Custom fields</h3>
             </div>
           }
-
         </div>
-
       </div>
     </form>
   );

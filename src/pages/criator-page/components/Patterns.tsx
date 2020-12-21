@@ -1,8 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { IObservable, observe, useObserver } from 'react-observing';
-import { VscAdd, VscClose, VscEdit, VscTrash } from 'react-icons/vsc';
+import { VscAdd, VscTrash } from 'react-icons/vsc';
 
-import { Input, Select, TextArea } from '../../../observable-components';
+import { Input, Select } from '../../../observable-components';
 import { IPatternCreator } from '../../../shared/interfaces';
 import { PatternsSuggestions } from './PatternsSuggestions';
 

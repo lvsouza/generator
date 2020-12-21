@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
-import { VscAdd, VscTrash } from 'react-icons/vsc';
 import { IObservable, observe, useObserver } from 'react-observing';
+import { VscAdd, VscTrash } from 'react-icons/vsc';
 
 import path from 'path';
 
@@ -59,14 +59,14 @@ export const FilesToMove: React.FC<FilesToMoveProps> = ({ filesToMove: _filesToM
               </td>
               <td>
                 <Input
-                  observable={newName}
                   placeholder="Type here..."
+                  observable={originalName}
                   className="full-width"
                 />
               </td>
               <td>
                 <Input
-                  observable={originalName}
+                  observable={newName}
                   placeholder="Type here..."
                   className="full-width"
                 />

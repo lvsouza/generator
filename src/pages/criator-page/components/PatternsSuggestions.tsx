@@ -19,7 +19,7 @@ export const PatternsSuggestions: React.FC<PatternsSuggestionsProps> = ({ sugges
     <div className="flex-content-center flex-items-center z5 fixed background-blur" style={{ width: '100vw', height: '100vh', top: 0, left: 0 }}>
       <div className="padding-m border-default border-radius background-bars box-shadow-medium-center flex-column" style={{ maxHeight: '80%' }}>
         <div className="flex-space-between flex-items-center">
-          <h3>Action content</h3>
+          <h3>Suggestions</h3>
           <button
             onClick={onClose}
             className="text-white padding-xs border-radius-rounded"

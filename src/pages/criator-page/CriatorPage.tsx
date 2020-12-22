@@ -11,6 +11,7 @@ import { FilesToMove } from './components/FilesToMove';
 import { Input } from '../../observable-components';
 import { Patterns } from './components/Patterns';
 import { writeFile } from '../../core/services';
+import { CustomFields } from './components/CustomFields';
 
 export const CriatorPage: React.FC = () => {
   const ref = useRef<HTMLInputElement | null>(null);
@@ -90,11 +91,7 @@ export const CriatorPage: React.FC = () => {
 
           {tab === 'files-to-change' && <FilesToChange filesToChange={ConfigFileCreatorStore.filesToChange} />}
 
-          {tab === 'custom-fields' &&
-            <div className="background-bars padding-m margin-m border-radius">
-              <h3>Custom fields</h3>
-            </div>
-          }
+          {tab === 'custom-fields' && <CustomFields customFields={ConfigFileCreatorStore.customFields} />}
         </div>
       </div>
     </form>

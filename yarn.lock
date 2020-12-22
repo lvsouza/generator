@@ -8706,10 +8706,10 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==
 
-react-observing@1.2.3:
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/react-observing/-/react-observing-1.2.3.tgz#67c46e8228e6d187f67b88398b0c7087f4dd942b"
-  integrity sha512-kKmOxJGC9eHCqrDWsZESqn91hEVTVbIlieCIwI0M5NMEMwST0ZdPrHUJsPtcdTAt7j6p3nBl2ynoLL+BgX6a2Q==
+react-observing@1.2.4:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/react-observing/-/react-observing-1.2.4.tgz#edea698808b01e739c2e1a43a46fd2c366165358"
+  integrity sha512-gAV11CjcEzfUgFDX7dfFvu8WOiF29Md2Ji6gOaIuln/mstkzpF5n6DZep+LZ1uwBWEJEW9aqjTFDPqSzyJSbNg==
 
 react-refresh@0.8.3:
   version "0.8.3"

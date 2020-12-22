@@ -2,6 +2,9 @@ import React from 'react';
 import { VscGithubAction, VscEdit } from 'react-icons/vsc';
 import { useHistory } from 'react-router-dom';
 
+import { CustomFields } from '../criator-page/components/CustomFields';
+import { ConfigFileCreatorStore } from '../../shared/stores';
+
 export const HomePage: React.FC = () => {
   const history = useHistory();
 
@@ -21,6 +24,8 @@ export const HomePage: React.FC = () => {
           Generator
         </button>
       </div>
+
+      <CustomFields customFields={ConfigFileCreatorStore.customFields} />
     </div>
   );
 };

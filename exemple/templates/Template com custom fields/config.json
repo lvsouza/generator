@@ -1,0 +1,156 @@
+{
+    "patterns": [
+        {
+            "key": "Entidade",
+            "props": {
+                "displayName": "Nome da entidade",
+                "description": "Nome da entidade a ser usada"
+            }
+        },
+        {
+            "key": "EntidadePlural",
+            "props": {
+                "displayName": "Nome da entidade no plural",
+                "description": "Usada na criação de rotas e outros"
+            }
+        },
+        {
+            "key": "EntidadeGenero",
+            "props": {
+                "displayName": "Nome da entidade no plural",
+                "description": "Usada na criação de rotas e outros",
+                "suggestions": [
+                    "a",
+                    "o"
+                ],
+                "type": "select"
+            }
+        }
+    ],
+    "customFields": {
+        "columnPatterns": [
+            {
+                "key": "PropPublico",
+                "props": {
+                    "type": "checkbox",
+                    "displayName": "Público",
+                    "description": "Torna atributo publico"
+                }
+            },
+            {
+                "key": "PropNome",
+                "props": {
+                    "type": "text",
+                    "required": true,
+                    "displayName": "Nome",
+                    "description": "Nome do atributo"
+                }
+            },
+            {
+                "key": "PropTipo",
+                "props": {
+                    "type": "select",
+                    "required": true,
+                    "displayName": "Tipo",
+                    "description": "Tipo do atributo",
+                    "suggestions": [
+                        "number",
+                        "string",
+                        "Date",
+                        "boolean"
+                    ]
+                }
+            },
+            {
+                "key": "PropPermiteNulo",
+                "props": {
+                    "type": "checkbox",
+                    "displayName": "Permite nulo",
+                    "description": "Permite quer atributo seja nulo"
+                }
+            },
+            {
+                "key": "PropTamanhoMinimo",
+                "props": {
+                    "type": "number",
+                    "displayName": "Tamanho mínimo",
+                    "description": "Tamanho mínimo do atributo"
+                }
+            },
+            {
+                "key": "PropTamanhoMaximo",
+                "props": {
+                    "type": "number",
+                    "displayName": "Tamanho máximo",
+                    "description": "Tamanho máximo do atributo"
+                }
+            },
+            {
+                "key": "PropValoPadrao",
+                "props": {
+                    "type": "text",
+                    "displayName": "Valor padrão",
+                    "description": "Valor do atributo"
+                }
+            }
+        ],
+        "interableColumnPatterns": [
+            {
+                "key": "InterfaceProps",
+                "props": {
+                    "displayName": "Interface",
+                    "description": "Inclui está propriedade na interface"
+                },
+                "content": [
+                    "  $CamelCase<({{PropNome}})>$If<({{PropPermiteNulo}}|true|?|)>: {{PropTipo}};"
+                ]
+            },
+            {
+                "key": "ClasseProps",
+                "props": {
+                    "displayName": "Classe",
+                    "description": "Inclui está propriedade na classe"
+                },
+                "content": [
+                    "",
+                    "  @Column('$SnakeCase<({{PropNome}})>', {$If<({{PropPermiteNulo}}|true| required: false, |)>$If<({{PropTamanhoMinimo}}||| minLenght: {{PropTamanhoMinimo}}, )>$If<({{PropTamanhoMaximo}}||| maxLenght: {{PropTamanhoMaximo}}, )>$If<({{PropValoPadrao}}||| default: {{PropValoPadrao}}, )>})",
+                    "  $If<({{PropPublico}}|true|public|private)> $CamelCase<({{PropNome}})>$If<({{PropPermiteNulo}}|true|?|)>: {{PropTipo}}$If<({{PropValoPadrao}}||| = {{PropValoPadrao}})>;"
+                ]
+            }
+        ]
+    },
+    "filesToMove": [
+        {
+            "originalName": "template01.ts",
+            "newName": "$PascalCase<({{Entidade}})>Page.tsx",
+            "targetPath": [
+                "{{ProjectPath}}",
+                "src",
+                "pages",
+                "$KebabCase<({{Entidade}})>"
+            ]
+        }
+    ],
+    "filesToChange": [
+        {
+            "name": "index.ts",
+            "description": "Adiciona nova exportação",
+            "path": [
+                "{{ProjectPath}}",
+                "src",
+                "pages",
+                "index.ts"
+            ],
+            "actions": [
+                {
+                    "position": "before",
+                    "target": "/* ROBO */",
+                    "description": "Exportação 01",
+                    "content": [
+                        "export * from './$KebabCase<({{Entidade}})>-page/$PascalCase<({{Entidade}})>Page';"
+                    ]
+                }
+            ]
+        }
+    ]
+}

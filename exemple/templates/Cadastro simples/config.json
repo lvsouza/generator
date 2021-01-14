@@ -1,0 +1,185 @@
+{
+  "patterns": [
+    {
+      "key": "Entidade",
+      "props": {
+        "displayName": "Nome da entidade",
+        "description": "Nome da entidade a ser usada"
+      }
+    },
+    {
+      "key": "EntidadePlural",
+      "props": {
+        "displayName": "Nome da entidade no plural",
+        "description": "Usada na criação de rotas e outros"
+      }
+    },
+    {
+      "key": "EntidadeGenero",
+      "props": {
+        "type": "select",
+        "suggestions": [
+          "a",
+          "o"
+        ],
+        "displayName": "Genero para a entidade",
+        "description": "Informe a letra para ser usada: \"a\" ou \"o\""
+      }
+    },
+    {
+      "key": "PrefixoDoModulo",
+      "props": {
+        "type": "select",
+        "displayName": "Prefixo do modulo",
+        "description": "Prefixo do modulo em questao ex: \"Sec\", \"Corp\", \"Ctr\"...",
+        "suggestions": [
+          "Corp",
+          "Bko",
+          "Ctr",
+          "Sec"
+        ]
+      }
+    }
+  ],
+  "customFields": {
+    "columnPatterns": [
+      {
+        "key": "PropName",
+        "props": {
+          "type": "text",
+          "required": true,
+          "displayName": "Nome",
+          "description": "Nome do atributo"
+        }
+      },
+      {
+        "key": "PropType",
+        "props": {
+          "type": "select",
+          "required": true,
+          "displayName": "Tipo",
+          "description": "Tipo do atributo",
+          "suggestions": [
+            "number",
+            "string",
+            "Date",
+            "boolean"
+          ]
+        }
+      }
+    ],
+    "interableColumnPatterns": [
+      {
+        "key": "InterfacePros",
+        "props": {
+          "displayName": "Interface",
+          "description": "Inclui está propriedade na interface"
+        },
+        "content": [
+          "    $CamelCase<({{PropName}})>: {{PropType}};"
+        ]
+      }
+    ]
+  },
+  "filesToMove": [
+    {
+      "originalName": "TemplateListagem.tsx",
+      "newName": "Listagem$PascalCase<({{Entidade}})>Page.tsx",
+      "targetPath": [
+        "{{ProjectPath}}",
+        "src",
+        "pages",
+        "$KebabCase<({{Entidade}})>"
+      ]
+    },
+    {
+      "originalName": "TemplateDetalhe.tsx",
+      "newName": "Detalhe$PascalCase<({{Entidade}})>Page.tsx",
+      "targetPath": [
+        "{{ProjectPath}}",
+        "src",
+        "pages",
+        "$KebabCase<({{Entidade}})>"
+      ]
+    }
+  ],
+  "filesToChange": [
+    {
+      "name": "index.ts",
+      "description": "Adiciona exportação de detalhe e listagem",
+      "path": [
+        "{{ProjectPath}}",
+        "src",
+        "pages",
+        "index.ts"
+      ],
+      "actions": [
+        {
+          "position": "before",
+          "target": "/* ROBO - Nova linha acima */",
+          "description": "Exportação as páginas de detalhe e listagem na pasta pages",
+          "content": [
+            "export * from './$KebabCase<({{Entidade}})>-page/Listagem$PascalCase<({{Entidade}})>Page';",
+            "export * from './$KebabCase<({{Entidade}})>-page/Detalhe$PascalCase<({{Entidade}})>Page';"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Routes.tsx",
+      "description": "Adiciona as rotas para detalhe e listagem",
+      "path": [
+        "{{ProjectPath}}",
+        "src",
+        "routes",
+        "Routes.tsx"
+      ],
+      "actions": [
+        {
+          "position": "before",
+          "target": "/* ROBO - Nova linha acima [import] */",
+          "description": "Importa página detalhe e listagem para as rotas",
+          "content": [
+            "    Detalhe$PascalCase<({{Entidade}})>Page,",
+            "    Listagem$PascalCase<({{Entidade}})>Page,"
+          ]
+        },
+        {
+          "position": "before",
+          "target": "{/* ROBO - Nova linha acima [rotas] */}",
+          "description": "Adiciona os componente de rotas",
+          "content": [
+            "            <Route path={'/$KebabCase<({{EntidadePlural}})>'} exact component={Listagem$PascalCase<({{Entidade}})>Page} />",
+            "            <Route path={'/$KebabCase<({{EntidadePlural}})>/:page'} exact component={Detalhe$PascalCase<({{Entidade}})>Page} />",
+            "            <Route path={'/$KebabCase<({{EntidadePlural}})>/detail/:id'} exact component={Detalhe$PascalCase<({{Entidade}})>Page} />"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "DrawerContext.tsx",
+      "description": "Adiciona item de menu no drawer",
+      "path": [
+        "{{ProjectPath}}",
+        "src",
+        "shared",
+        "contexts",
+        "DrawerContext.tsx"
+      ],
+      "actions": [
+        {
+          "position": "before",
+          "target": "/* ROBO - Nova linha acima */",
+          "description": "Inserção de item de menu no array de itens do drawer",
+          "content": [
+            "        {",
+            "            key: '$KebabCase<({{EntidadePlural}})>',",
+            "            path: '/$KebabCase<({{EntidadePlural}})>',",
+            "            label: '$FirstUpper<({{EntidadePlural}})>',",
+            "        },"
+          ]
+        }
+      ]
+    }
+  ]
+}

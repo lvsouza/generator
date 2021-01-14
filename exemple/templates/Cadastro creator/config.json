@@ -1,0 +1,15 @@
+{
+  "patterns": [
+    {
+      "key": "teste",
+      "props": {
+        "type": "text",
+        "displayName": "",
+        "description": "",
+        "suggestions": []
+      }
+    }
+  ],
+  "filesToMove": [],
+  "filesToChange": []
+}
